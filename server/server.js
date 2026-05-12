@@ -9,7 +9,12 @@ dotenv.config();
 
 const app = express();
 
+
+
+/* MIDDLEWARE */
+
 app.use(cors());
+
 app.use(express.json());
 
 
@@ -19,7 +24,7 @@ app.use(express.json());
 app.listen(5000, () => {
 
   console.log(
-    "Server Running on Port 5000"
+    "FabricAI Server Running On Port 5000"
   );
 
 });
@@ -61,7 +66,7 @@ app.post(
           "INR",
 
         receipt:
-          "receipt_order",
+          "fabricai_receipt",
 
       };
 
@@ -77,8 +82,10 @@ app.post(
       console.log(error);
 
       res.status(500).json({
+
         message:
           "Order creation failed",
+
       });
 
     }
@@ -107,42 +114,67 @@ app.post(
       } = req.body;
 
       const sign =
+
         razorpay_order_id +
         "|" +
         razorpay_payment_id;
 
       const expectedSign =
+
         crypto
           .createHmac(
+
             "sha256",
-            process.env.RAZORPAY_SECRET
+
+            process.env
+              .RAZORPAY_SECRET
+
           )
           .update(sign.toString())
           .digest("hex");
 
+
+
       if (
+
         razorpay_signature ===
         expectedSign
+
       ) {
 
         return res.json({
+
           success: true,
-        });
 
-      } else {
+          message:
+            "Payment Verified",
 
-        return res.json({
-          success: false,
         });
 
       }
+
+
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "Payment Verification Failed",
+
+      });
 
     } catch (error) {
 
       console.log(error);
 
       res.status(500).json({
+
         success: false,
+
+        message:
+          "Verification Failed",
+
       });
 
     }
@@ -162,6 +194,13 @@ app.post(
 
       const { email } =
         req.body;
+
+      console.log(
+        "RESET REQUEST:",
+        email
+      );
+
+
 
       const transporter =
         nodemailer.createTransport({
@@ -185,68 +224,118 @@ app.post(
 
         });
 
-      await transporter.sendMail({
 
-        from:
-          process.env.EMAIL_USER,
 
-        to: email,
+      const info =
+        await transporter.sendMail({
 
-        subject:
-          "FabricAI Reset Password",
+          from:
+            process.env.EMAIL_USER,
 
-        html: `
+          to: email,
+
+          subject:
+            "FabricAI Reset Password",
+
+          html: `
 
           <div
             style="
               font-family:sans-serif;
-              padding:30px;
+              padding:40px;
+              background:#f1f5f9;
             "
           >
 
-            <h1>
-              FabricAI Password Reset
-            </h1>
-
-            <p>
-              Click button below to reset password.
-            </p>
-
-            <a
-              href="http://localhost:5173/reset-password?email=${email}"
-
+            <div
               style="
-                display:inline-block;
-                background:#059669;
-                color:white;
-                padding:14px 24px;
-                border-radius:10px;
-                text-decoration:none;
-                margin-top:20px;
-                font-weight:bold;
+                max-width:500px;
+                margin:auto;
+                background:white;
+                padding:40px;
+                border-radius:20px;
+                box-shadow:0 10px 40px rgba(0,0,0,0.1);
               "
             >
-              Reset Password
-            </a>
+
+              <h1
+                style="
+                  font-size:34px;
+                  margin-bottom:20px;
+                  color:#0f172a;
+                "
+              >
+                Reset Password
+              </h1>
+
+              <p
+                style="
+                  color:#64748b;
+                  margin-bottom:30px;
+                  line-height:1.7;
+                "
+              >
+                Click the button below to reset your FabricAI account password.
+              </p>
+
+              <a
+
+                href="https://fabricai-pro-92aq.vercel.app/reset-password?email=${email}"
+
+                style="
+                  display:inline-block;
+                  background:#059669;
+                  color:white;
+                  padding:16px 30px;
+                  border-radius:14px;
+                  text-decoration:none;
+                  font-weight:bold;
+                  font-size:16px;
+                "
+              >
+                Reset Password
+              </a>
+
+            </div>
 
           </div>
 
-        `,
+          `,
 
-      });
+        });
+
+
+
+      console.log(
+        "MAIL RESPONSE:",
+        info
+      );
+
+
 
       res.json({
+
+        success: true,
+
         message:
           "Reset email sent successfully",
+
       });
 
     } catch (error) {
 
-      console.log(error);
+      console.log(
+        "EMAIL ERROR:",
+        error
+      );
 
       res.status(500).json({
+
+        success: false,
+
         message:
           "Email sending failed",
+
       });
 
     }
@@ -265,19 +354,32 @@ app.post(
     try {
 
       const {
+
         email,
+
         password,
+
       } = req.body;
 
       console.log(
-        "RESET:",
+
+        "PASSWORD RESET:",
+
         email,
+
         password
+
       );
 
+
+
       res.json({
+
+        success: true,
+
         message:
           "Password changed successfully",
+
       });
 
     } catch (error) {
@@ -285,8 +387,12 @@ app.post(
       console.log(error);
 
       res.status(500).json({
+
+        success: false,
+
         message:
-          "Reset failed",
+          "Reset Failed",
+
       });
 
     }
