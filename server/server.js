@@ -19,6 +19,19 @@ app.use(express.json());
 
 
 
+/* TEMP DATABASE */
+
+let users = [
+
+  {
+    email: "prineee@gmail.com",
+    password: "12345678",
+  },
+
+];
+
+
+
 /* SERVER */
 
 app.listen(5000, () => {
@@ -46,7 +59,7 @@ const razorpay =
 
 
 
-/* CREATE ORDER */
+/* CREATE PAYMENT ORDER */
 
 app.post(
   "/api/payment/create-order",
@@ -82,6 +95,8 @@ app.post(
       console.log(error);
 
       res.status(500).json({
+
+        success: false,
 
         message:
           "Order creation failed",
@@ -184,6 +199,181 @@ app.post(
 
 
 
+/* REGISTER */
+
+app.post(
+  "/api/auth/register",
+  async (req, res) => {
+
+    try {
+
+      const {
+
+        email,
+
+        password,
+
+      } = req.body;
+
+
+
+      const existingUser =
+        users.find(
+          (u) =>
+            u.email === email
+        );
+
+
+
+      if (existingUser) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "User already exists",
+
+        });
+
+      }
+
+
+
+      users.push({
+
+        email,
+
+        password,
+
+      });
+
+
+
+      console.log(
+        "REGISTERED USERS:",
+        users
+      );
+
+
+
+      res.json({
+
+        success: true,
+
+        message:
+          "Registration Successful",
+
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+
+        success: false,
+
+        message:
+          "Registration Failed",
+
+      });
+
+    }
+
+  }
+);
+
+
+
+/* LOGIN */
+
+app.post(
+  "/api/auth/login",
+  async (req, res) => {
+
+    try {
+
+      const {
+
+        email,
+
+        password,
+
+      } = req.body;
+
+
+
+      const user =
+        users.find(
+          (u) =>
+            u.email === email
+        );
+
+
+
+      if (!user) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "User not found",
+
+        });
+
+      }
+
+
+
+      if (
+        user.password !==
+        password
+      ) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "Invalid password",
+
+        });
+
+      }
+
+
+
+      res.json({
+
+        success: true,
+
+        message:
+          "Login Success",
+
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+
+        success: false,
+
+        message:
+          "Login Failed",
+
+      });
+
+    }
+
+  }
+);
+
+
+
 /* FORGOT PASSWORD */
 
 app.post(
@@ -194,6 +384,8 @@ app.post(
 
       const { email } =
         req.body;
+
+
 
       console.log(
         "RESET REQUEST:",
@@ -275,7 +467,7 @@ app.post(
                   line-height:1.7;
                 "
               >
-                Click the button below to reset your FabricAI account password.
+                Click button below to reset your password.
               </p>
 
               <a
@@ -361,14 +553,39 @@ app.post(
 
       } = req.body;
 
+
+
+      const user =
+        users.find(
+          (u) =>
+            u.email === email
+        );
+
+
+
+      if (!user) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "User not found",
+
+        });
+
+      }
+
+
+
+      user.password =
+        password;
+
+
+
       console.log(
-
-        "PASSWORD RESET:",
-
-        email,
-
-        password
-
+        "UPDATED USER:",
+        user
       );
 
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -11,172 +11,145 @@ export default function Login() {
   const [password, setPassword] =
     useState("");
 
-  const handleLogin =
-    async () => {
 
-      try {
 
-        const response =
-          await fetch(
-            "http://localhost:5000/api/auth/login",
-            {
-              method: "POST",
+  const login = () => {
 
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
+    if (!email || !password) {
 
-              body: JSON.stringify({
-                email,
-                password,
-              }),
-            }
-          );
+      alert(
+        "Please enter email and password"
+      );
 
-        const data =
-          await response.json();
+      return;
+    }
 
-        if (data.token) {
 
-          localStorage.setItem(
-            "token",
-            data.token
-          );
 
-          localStorage.setItem(
-            "user",
-            JSON.stringify(
-              data.user
-            )
-          );
+    localStorage.setItem(
+      "token",
+      "fabricai_token"
+    );
 
-          alert(
-            "Login Successful"
-          );
 
-          navigate("/");
 
-        } else {
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
 
-          alert(
-            data.message
-          );
+        name: "Naveen",
 
-        }
+        email,
 
-      } catch (error) {
+        plan: "Demo",
 
-        console.log(error);
+      })
+    );
 
-        alert(
-          "Login Failed"
-        );
 
-      }
 
-    };
+    alert(
+      "Login Successful"
+    );
+
+
+
+    navigate("/");
+
+  };
+
+
 
   return (
 
     <div className="min-h-screen flex items-center justify-center bg-slate-100">
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md">
+      <div className="bg-white p-10 rounded-3xl shadow-2xl w-[420px]">
 
-        <h1 className="text-4xl font-black mb-8 text-center">
+        <h1 className="text-4xl font-black mb-8">
           Login
         </h1>
 
-        <div className="space-y-5">
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(
-                e.target.value
-              )
-            }
-            className="w-full border rounded-2xl p-4"
-          />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
-            className="w-full border rounded-2xl p-4"
-          />
+        <input
+
+          type="email"
+
+          placeholder="Email"
+
+          value={email}
+
+          onChange={(e) =>
+            setEmail(
+              e.target.value
+            )
+          }
+
+          className="w-full border p-4 rounded-2xl mb-5"
+        />
+
+
+
+        <input
+
+          type="password"
+
+          placeholder="Password"
+
+          value={password}
+
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
+
+          className="w-full border p-4 rounded-2xl mb-8"
+        />
+
+
+
+        <button
+
+          type="button"
+
+          onClick={login}
+
+          className="w-full bg-emerald-600 text-white p-4 rounded-2xl font-bold"
+        >
+          Login
+        </button>
+
+
+
+        <Link to="/forgot-password">
 
           <button
-            onClick={
-              handleLogin
-            }
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-4 font-bold"
+
+            type="button"
+
+            className="w-full mt-4 text-emerald-700 font-semibold"
           >
-            Login
+            Forgot Password?
           </button>
-          <button
-  onClick={async () => {
 
-    const email = prompt(
-      "Enter your registered email"
-    );
+        </Link>
 
-    if (!email) return;
 
-    try {
 
-      const response = await fetch(
-        "http://localhost:5000/api/auth/forgot-password",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify({
-            email,
-          }),
-        }
-      );
-
-      const data =
-        await response.json();
-
-      alert(data.message);
-
-    } catch (error) {
-
-      alert(
-        "Server Error"
-      );
-
-    }
-
-  }}
-  className="w-full mt-4 text-emerald-600 font-semibold"
->
-  Forgot Password?
-</button>
+        <Link to="/signup">
 
           <button
-            onClick={() =>
-              navigate("/signup")
-            }
-            className="w-full border rounded-2xl p-4 font-semibold"
+
+            type="button"
+
+            className="w-full border p-4 rounded-2xl mt-5"
           >
             Create Account
           </button>
 
-        </div>
+        </Link>
 
       </div>
 

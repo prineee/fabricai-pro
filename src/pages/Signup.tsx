@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Signup() {
 
@@ -14,140 +14,173 @@ export default function Signup() {
   const [password, setPassword] =
     useState("");
 
-  const handleSignup =
-    async () => {
 
-      try {
 
-        const response =
-          await fetch(
-            "http://localhost:5000/api/auth/signup",
-            {
-              method: "POST",
+  const register = () => {
 
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
+    if (
+      !name ||
+      !email ||
+      !password
+    ) {
 
-              body: JSON.stringify({
-                name,
-                email,
-                password,
-              }),
-            }
-          );
+      alert(
+        "Please fill all fields"
+      );
 
-        const data =
-          await response.json();
+      return;
+    }
 
-        if (data.token) {
 
-          localStorage.setItem(
-            "token",
-            data.token
-          );
 
-          localStorage.setItem(
-            "user",
-            JSON.stringify(
-              data.user
-            )
-          );
+    const users =
+      JSON.parse(
+        localStorage.getItem(
+          "users"
+        ) || "[]"
+      );
 
-          alert(
-            "Signup Successful"
-          );
 
-          navigate("/");
 
-        } else {
+    const alreadyExists =
+      users.find(
+        (u: any) =>
+          u.email === email
+      );
 
-          alert(
-            data.message
-          );
 
-        }
 
-      } catch (error) {
+    if (alreadyExists) {
 
-        console.log(error);
+      alert(
+        "User already exists"
+      );
 
-        alert(
-          "Signup Failed"
-        );
+      return;
+    }
 
-      }
+
+
+    const newUser = {
+
+      name,
+      email,
+      password,
+      plan: "Demo",
 
     };
+
+
+
+    users.push(newUser);
+
+
+
+    localStorage.setItem(
+      "users",
+      JSON.stringify(users)
+    );
+
+
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(newUser)
+    );
+
+
+
+    localStorage.setItem(
+      "token",
+      "fabricai_token"
+    );
+
+
+
+    alert(
+      "Account Created Successfully"
+    );
+
+
+
+    navigate("/");
+
+  };
+
+
 
   return (
 
     <div className="min-h-screen flex items-center justify-center bg-slate-100">
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md">
+      <div className="bg-white p-10 rounded-3xl shadow-2xl w-[420px]">
 
-        <h1 className="text-4xl font-black mb-8 text-center">
+        <h1 className="text-4xl font-black mb-8">
           Create Account
         </h1>
 
-        <div className="space-y-5">
 
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) =>
-              setName(
-                e.target.value
-              )
-            }
-            className="w-full border rounded-2xl p-4"
-          />
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(
-                e.target.value
-              )
-            }
-            className="w-full border rounded-2xl p-4"
-          />
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) =>
+            setName(
+              e.target.value
+            )
+          }
+          className="w-full border p-4 rounded-2xl mb-5"
+        />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
-            className="w-full border rounded-2xl p-4"
-          />
+
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(
+              e.target.value
+            )
+          }
+          className="w-full border p-4 rounded-2xl mb-5"
+        />
+
+
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
+          className="w-full border p-4 rounded-2xl mb-8"
+        />
+
+
+
+        <button
+          onClick={register}
+          className="w-full bg-emerald-600 text-white p-4 rounded-2xl font-bold"
+        >
+          Create Account
+        </button>
+
+
+
+        <Link to="/login">
 
           <button
-            onClick={
-              handleSignup
-            }
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-4 font-bold"
+            className="w-full border p-4 rounded-2xl mt-5"
           >
-            Signup
+            Back To Login
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/login")
-            }
-            className="w-full border rounded-2xl p-4 font-semibold"
-          >
-            Go To Login
-          </button>
-
-        </div>
+        </Link>
 
       </div>
 
