@@ -1,19 +1,39 @@
+import { useEffect, useState } from "react";
+import api from "../services/api";
+
 export default function Dashboard() {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const res = await api.get("/api/admin/stats");
+      setStats(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+    <div className="text-white p-10">
+      <h1 className="text-4xl font-bold mb-10">
+        Dashboard
+      </h1>
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl">
+      {stats && (
+        <div className="grid grid-cols-2 gap-5">
+          <div className="bg-zinc-900 p-6 rounded-xl">
+            Users: {stats.totalUsers}
+          </div>
 
-        <h1 className="text-5xl font-black mb-4">
-          FabricAI Pro
-        </h1>
-
-        <p className="text-slate-500 text-xl">
-          Dashboard Working Successfully
-        </p>
-
-      </div>
-
+          <div className="bg-zinc-900 p-6 rounded-xl">
+            AI Usage: {stats.totalAIUsage}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
