@@ -5,6 +5,7 @@ import {
   FileText,
 } from "lucide-react";
 
+// @ts-ignore
 import { analyzeGarment } from "../services/openai";
 
 export default function Workspace() {
