@@ -45,14 +45,13 @@ export default function Billing() {
       console.log(error);
 
       alert("Payment Failed");
-
     }
   };
 
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         background: "black",
         display: "flex",
         justifyContent: "center",
@@ -61,35 +60,57 @@ export default function Billing() {
     >
       <div
         style={{
-          padding: "40px",
-          borderRadius: "20px",
+          width: "450px",
+          padding: "50px",
           background: "#111",
-          width: "400px",
+          borderRadius: "20px",
           textAlign: "center",
+          border: "1px solid #222",
         }}
       >
         <h1
           style={{
             color: "white",
+            fontSize: "42px",
+          }}
+        >
+          Upgrade To Pro
+        </h1>
+
+        <h2
+          style={{
+            color: "#2563eb",
+            fontSize: "60px",
+          }}
+        >
+          ₹499
+        </h2>
+
+        <p
+          style={{
+            color: "#aaa",
+            lineHeight: "1.7",
             marginBottom: "30px",
           }}
         >
-          Upgrade Plan
-        </h1>
+          Unlock premium AI features, advanced dashboard access,
+          business automation tools and commercial license.
+        </p>
 
         <button
           onClick={startPayment}
           style={{
-            padding: "15px 30px",
-            border: "none",
-            borderRadius: "10px",
+            width: "100%",
+            padding: "18px",
             background: "#2563eb",
+            border: "none",
+            borderRadius: "12px",
             color: "white",
-            fontSize: "20px",
+            fontSize: "22px",
             cursor: "pointer",
           }}
         >
-          Pay ₹499
+          Upgrade Now
         </button>
       </div>
     </div>

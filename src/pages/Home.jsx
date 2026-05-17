@@ -1,15 +1,37 @@
-const Home = () => {
+import { Link } from "react-router-dom";
+
+export default function Home() {
   return (
-    <div className="p-10 text-white">
-      <h1 className="text-5xl font-bold">
-        FabricAI Pro
-      </h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#000",
+        color: "white",
+        fontFamily: "Arial",
+      }}
+    >
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "20px 40px",
+          background: "#0f0f0f",
+          borderBottom: "1px solid #222",
+        }}
+      >
+        <h2>FabricAI Pro</h2>
 
-      <p className="mt-6 text-zinc-400">
-        Enterprise AI SaaS Platform
-      </p>
-    </div>
-  );
-};
+        <div style={{ display: "flex", gap: "20px" }}>
+          <Link to="/login" style={{ color: "white" }}>
+            Login
+          </Link>
 
-export default Home;
+          <Link to="/register" style={{ color: "white" }}>
+            Register
+          </Link>
+
+          <Link to="/billing" style={{ color: "white" }}>
+            Upgrade
+          </Link>
+        </div>
+}
