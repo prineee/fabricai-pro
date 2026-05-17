@@ -1,23 +1,21 @@
 const express = require("express");
-const router = express.Router";
+const User = require("../models/User");
+
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    const totalUsers = await User.countDocuments();
 
-    const dashboardData = {
-      users: 125,
-      revenue: 45200,
-      orders: 89,
-    };
-
-    res.json(dashboardData);
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: "Dashboard fetch failed",
+    res.json({
+      users: totalUsers,
+      revenue: 25000,
+      orders: 120,
     });
-
+  } catch (error) {
+    res.status(500).json({
+      message: "Dashboard failed",
+    });
   }
 });
 
