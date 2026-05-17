@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import api from "../services/aiService";
 import axios from "axios";
 
 const AIChat = () => {
@@ -24,7 +24,7 @@ const AIChat = () => {
         );
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/ai/history",
+        "http://ai/history",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const AIChat = () => {
         );
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/ai/chat",
+        "http://ai/chat",
         {
           prompt,
         },
