@@ -1,45 +1,37 @@
-import express from "express";
-
-import {
-  register,
-  login,
-  forgotPassword,
-  resetPassword,
-  getProfile,
-  updateProfile,
-} from "../controllers/authController.js";
-
-import { protect } from "../middleware/authMiddleware.js";
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Auth route working",
-  });
-});
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
 
-router.post("/register", register);
+    const existing = await User.findOne({ email });
 
-router.post("/login", login);
+    if (existing) {
+      return res.status(400).json({
+        message: "User already exists",
+      });
+    }
 
-router.post(
-  "/forgot-password",
-  forgotPassword
-);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-router.post(
-  "/reset-password/:token",
-  resetPassword
-);
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-router.get("/profile", protect, getProfile);
-
-router.put(
-  "/profile",
-  protect,
-  updateProfile
-);
-
-export default router;
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+module.exports = router;
