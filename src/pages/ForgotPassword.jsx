@@ -1,49 +1,44 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const submit = async () => {
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/forgot-password",
-        { email }
-      );
+      await api.post("/auth/forgot-password", {
+        email,
+      });
 
-      alert(data.message);
+      alert("Reset link sent");
     } catch (error) {
-      console.log(error);
-      alert("Something went wrong");
+      console.error(error);
+      alert("Failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-xl w-[400px]"
-      >
-        <h1 className="text-3xl font-bold mb-6">
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="bg-zinc-900 p-8 rounded-xl w-[400px]">
+        <h1 className="text-3xl text-white font-bold mb-6">
           Forgot Password
         </h1>
 
         <input
           type="email"
-          placeholder="Enter Email"
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          placeholder="Enter email"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-4 rounded-lg bg-black text-white border border-zinc-700 mb-4"
         />
 
-        <button className="w-full bg-blue-600 p-3 rounded">
+        <button
+          onClick={submit}
+          className="w-full bg-blue-600 p-4 rounded-lg text-white"
+        >
           Send Reset Link
         </button>
-      </form>
+      </div>
     </div>
   );
 };

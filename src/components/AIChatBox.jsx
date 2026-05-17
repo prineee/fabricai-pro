@@ -1,49 +1,56 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 const AIChatBox = () => {
-  const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
+  const [message, setMessage] = useState("");
+  const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const askAI = async () => {
+  const sendMessage = async () => {
+    if (!message) return;
+
     try {
       setLoading(true);
 
-      const { data } = await axios.post(
-        "http://localhost:5000/api/ai/chat",
-        {
-          prompt,
-        }
-      );
+      const res = await api.post("/ai/chat", {
+        message,
+      });
 
-      setResponse(data.response);
+      setReply(res.data.reply);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      alert("AI request failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+    <div className="bg-zinc-900 p-6 rounded-xl text-white">
+      <h2 className="text-2xl font-bold mb-4">
+        AI Chat
+      </h2>
+
       <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Ask FabricAI anything..."
-        className="w-full h-[140px] bg-black border border-zinc-700 rounded-xl p-4 outline-none"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        className="w-full p-4 rounded-lg bg-black border border-zinc-700"
+        rows="4"
+        placeholder="Ask AI anything..."
       />
 
       <button
-        onClick={askAI}
-        className="bg-blue-600 px-6 py-3 rounded-xl mt-4 hover:bg-blue-700 transition"
+        onClick={sendMessage}
+        className="mt-4 bg-blue-600 px-6 py-3 rounded-lg"
       >
-        {loading ? "Thinking..." : "Ask AI"}
+        {loading ? "Thinking..." : "Send"}
       </button>
 
-      <div className="mt-6 bg-black rounded-xl p-5 min-h-[120px] border border-zinc-800">
-        {response}
-      </div>
+      {reply && (
+        <div className="mt-6 bg-black p-4 rounded-lg">
+          {reply}
+        </div>
+      )}
     </div>
   );
 };
