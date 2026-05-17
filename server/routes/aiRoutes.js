@@ -6,11 +6,19 @@ dotenv.config();
 
 const router = express.Router();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(
+  process.env.GEMINI_API_KEY
+);
 
 router.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({
+        error: "Message required",
+      });
+    }
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -18,15 +26,13 @@ router.post("/chat", async (req, res) => {
 
     const result = await model.generateContent(message);
 
-    const response = await result.response;
-
-    const text = response.text();
+    const response = result.response.text();
 
     res.json({
-      reply: text,
+      reply: response,
     });
   } catch (error) {
-    console.log(error);
+    console.log("AI ERROR:", error);
 
     res.status(500).json({
       error: "AI request failed",
