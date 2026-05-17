@@ -1,51 +1,49 @@
 import {
+  BrowserRouter,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
-
-import ProtectedRoute from "./components/ProtectedRoute";
+import Billing from "./pages/Billing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 export default function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={<Navigate to="/dashboard" />}
-      />
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Dashboard />}
+        />
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
 
-      <Route
-        path="/register"
-        element={<Register />}
-      />
+        <Route
+          path="/ai"
+          element={<AIChat />}
+        />
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/billing"
+          element={<Billing />}
+        />
 
-      <Route
-        path="/ai"
-        element={
-          <ProtectedRoute>
-            <AIChat />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
