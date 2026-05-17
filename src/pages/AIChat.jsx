@@ -1,19 +1,21 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
-export default function AIChat() {
+function AIChat() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message) return;
 
     const userMessage = {
-      sender: "user",
+      role: "user",
       text: message,
     };
 
     setChat((prev) => [...prev, userMessage]);
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -24,61 +26,136 @@ export default function AIChat() {
       );
 
       const aiMessage = {
-        sender: "ai",
+        role: "ai",
         text: response.data.reply,
       };
 
       setChat((prev) => [...prev, aiMessage]);
     } catch (error) {
-      console.log(error);
-
       setChat((prev) => [
         ...prev,
         {
-          sender: "ai",
+          role: "ai",
           text: "AI request failed",
         },
       ]);
     }
 
     setMessage("");
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-6xl font-bold mb-8">
-        FabricAI Chat Assistant
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#020617",
+        color: "white",
+        fontFamily: "Arial",
+        padding: "30px",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "48px",
+          marginBottom: "20px",
+        }}
+      >
+        FabricAI Workspace
       </h1>
 
-      <div className="bg-zinc-900 rounded-3xl p-8 h-[600px] overflow-y-auto">
-        <div className="space-y-4">
-          {chat.map((msg, index) => (
+      <div
+        style={{
+          background: "#111827",
+          borderRadius: "20px",
+          padding: "20px",
+          height: "70vh",
+          overflowY: "auto",
+          marginBottom: "20px",
+          border: "1px solid #1e293b",
+        }}
+      >
+        {chat.length === 0 && (
+          <div
+            style={{
+              color: "#94a3b8",
+              textAlign: "center",
+              marginTop: "100px",
+            }}
+          >
+            Start chatting with FabricAI...
+          </div>
+        )}
+
+        {chat.map((msg, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              justifyContent:
+                msg.role === "user"
+                  ? "flex-end"
+                  : "flex-start",
+              marginBottom: "20px",
+            }}
+          >
             <div
-              key={index}
-              className={`p-6 rounded-3xl text-2xl ${
-                msg.sender === "user"
-                  ? "bg-blue-600 ml-24"
-                  : "bg-zinc-700 mr-24"
-              }`}
+              style={{
+                background:
+                  msg.role === "user"
+                    ? "#2563eb"
+                    : "#1e293b",
+                padding: "16px",
+                borderRadius: "16px",
+                maxWidth: "70%",
+                lineHeight: "1.6",
+              }}
             >
               {msg.text}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+
+        {loading && (
+          <div style={{ color: "#94a3b8" }}>
+            AI is thinking...
+          </div>
+        )}
       </div>
 
-      <div className="flex gap-4 mt-8">
+      <div
+        style={{
+          display: "flex",
+          gap: "15px",
+        }}
+      >
         <input
           type="text"
-          placeholder="Ask AI..."
+          placeholder="Ask FabricAI anything..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 bg-zinc-800 p-6 rounded-3xl text-2xl outline-none"
+          style={{
+            flex: 1,
+            padding: "18px",
+            borderRadius: "14px",
+            border: "none",
+            background: "#111827",
+            color: "white",
+            fontSize: "18px",
+          }}
         />
 
         <button
           onClick={sendMessage}
-          className="bg-blue-600 hover:bg-blue-700 px-10 rounded-3xl text-2xl font-bold"
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            padding: "18px 30px",
+            borderRadius: "14px",
+            cursor: "pointer",
+            fontSize: "18px",
+          }}
         >
           Send
         </button>
@@ -86,3 +163,5 @@ export default function AIChat() {
     </div>
   );
 }
+
+export default AIChat;
