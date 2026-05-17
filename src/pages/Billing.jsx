@@ -1,28 +1,90 @@
-import api from "../services/api";
+import axios from "axios";
 
-const Billing = () => {
+const API =
+  "https://fabricai-backend.onrender.com";
+
+export default function Billing() {
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script =
+        document.createElement("script");
+
+      script.src =
+        "https://checkout.razorpay.com/v1/checkout.js";
+
+      script.onload = () => {
+        resolve(true);
+      };
+
+      script.onerror = () => {
+        resolve(false);
+      };
+
+      document.body.appendChild(script);
+    });
+  };
+
   const handlePayment = async () => {
     try {
-      const order = await api.post("/payment/create-order", {
-        amount: 499,
-      });
+      const loaded =
+        await loadRazorpay();
+
+      if (!loaded) {
+        alert(
+          "Razorpay SDK failed to load"
+        );
+        return;
+      }
+
+      const orderResponse =
+        await axios.post(
+          `${API}/api/payment/create-order`
+        );
+
+      const order =
+        orderResponse.data;
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
-        amount: order.data.amount,
-        currency: "INR",
+        key: "rzp_live_SngV5d3BGmZJ1p",
+
+        amount: order.amount,
+
+        currency: order.currency,
+
         name: "FabricAI Pro",
-        description: "Premium Subscription",
-        order_id: order.data.id,
 
-        handler: async function (response) {
+        description:
+          "Premium AI Subscription",
+
+        order_id: order.id,
+
+        handler: async function (
+          response
+        ) {
           try {
-            await api.post("/payment/verify", response);
+            const verifyRes =
+              await axios.post(
+                `${API}/api/payment/verify-payment`,
+                response
+              );
 
-            alert("Payment Successful");
-          } catch (error) {
-            console.error(error);
-            alert("Verification Failed");
+            if (
+              verifyRes.data.success
+            ) {
+              alert(
+                "Payment Successful"
+              );
+            } else {
+              alert(
+                "Payment Verification Failed"
+              );
+            }
+          } catch (err) {
+            console.log(err);
+
+            alert(
+              "Verification Error"
+            );
           }
         },
 
@@ -31,34 +93,59 @@ const Billing = () => {
         },
       };
 
-      const razor = new window.Razorpay(options);
-      razor.open();
+      const paymentObject =
+        new window.Razorpay(options);
+
+      paymentObject.open();
     } catch (error) {
-      console.error(error);
+      console.log(error);
+
       alert("Payment Failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
-      <div className="bg-zinc-900 p-10 rounded-2xl text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          Upgrade Plan
-        </h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#000",
+        color: "#fff",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#111",
+          padding: "40px",
+          borderRadius: "20px",
+          width: "400px",
+          textAlign: "center",
+        }}
+      >
+        <h1>Upgrade Plan</h1>
 
-        <p className="text-zinc-400 mb-8">
+        <p>
           Unlock premium AI features
         </p>
 
         <button
           onClick={handlePayment}
-          className="bg-blue-600 px-8 py-4 rounded-xl text-lg"
+          style={{
+            marginTop: "20px",
+            padding: "15px 30px",
+            border: "none",
+            borderRadius: "10px",
+            background: "#2563eb",
+            color: "#fff",
+            fontSize: "18px",
+            cursor: "pointer",
+          }}
         >
           Pay ₹499
         </button>
       </div>
     </div>
   );
-};
-
-export default Billing;
+}
