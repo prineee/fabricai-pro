@@ -1,13 +1,24 @@
-import express from "express";
+const express = require("express");
+const router = express.Router";
 
-import { protect } from "../middleware/authMiddleware.js";
+router.get("/", async (req, res) => {
+  try {
 
-import {
-  getDashboardData,
-} from "../controllers/dashboardController.js";
+    const dashboardData = {
+      users: 125,
+      revenue: 45200,
+      orders: 89,
+    };
 
-const router = express.Router();
+    res.json(dashboardData);
 
-router.get("/", protect, getDashboardData);
+  } catch (error) {
 
-export default router;
+    res.status(500).json({
+      message: "Dashboard fetch failed",
+    });
+
+  }
+});
+
+module.exports = router;
