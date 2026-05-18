@@ -1,26 +1,30 @@
 app.post("/api/payment/create-order", async (req, res) => {
-
   try {
 
-    const { amount, plan } = req.body;
+    console.log("PAYMENT API HIT");
+
+    console.log("KEY ID:", process.env.RAZORPAY_KEY_ID);
 
     const options = {
-      amount: amount * 100,
+      amount: 49900,
       currency: "INR",
-      receipt: plan,
+      receipt: "receipt_order_1",
     };
 
     const order = await razorpay.orders.create(options);
+
+    console.log(order);
 
     res.json(order);
 
   } catch (error) {
 
-    console.log("PAYMENT ERROR:", error);
+    console.log("FULL PAYMENT ERROR:");
+    console.log(error);
 
     res.status(500).json({
-      success: false,
-      error: error.message
+      error: "Payment backend failed",
+      details: error.message,
     });
   }
 });
