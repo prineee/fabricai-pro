@@ -2,6 +2,12 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom";
+import { db } from "../firebase";
+
+import {
+  doc,
+  setDoc
+} from "firebase/firestore";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,11 +24,16 @@ export default function Register() {
       setLoading(true);
       setError("");
 
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+    await setDoc(doc(db, "users", user.uid), {
+  uid: user.uid,
+  email: user.email,
+  plan: "starter",
+  country: "india",
+  createdAt: new Date(),
+  totalGenerations: 0,
+  affiliateId: "",
+  referralCount: 0
+});
 
       navigate("/dashboard");
     } catch (err) {

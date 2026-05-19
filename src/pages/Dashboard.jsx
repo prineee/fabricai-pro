@@ -2,17 +2,33 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Dashboard() {
+
   const [prompt, setPrompt] = useState("");
+
   const [result, setResult] = useState("");
+
   const [loading, setLoading] = useState(false);
 
+  const history = [
+    "Facebook Ads for Fitness Product",
+    "AI Blog about Digital Marketing",
+    "Email Campaign for SaaS Product",
+    "Landing Page for AI Startup",
+  ];
+
+  // =====================================
+  // GENERATE CONTENT
+  // =====================================
+
   const generateContent = async (type) => {
+
     if (!prompt) {
-      alert("Please enter a prompt");
+      alert("Enter Prompt");
       return;
     }
 
     try {
+
       setLoading(true);
 
       const response = await axios.post(
@@ -24,114 +40,206 @@ export default function Dashboard() {
       );
 
       setResult(response.data.result);
-    } catch (error) {
-      console.log(error);
-      alert("AI Generation Failed");
-    } finally {
+
       setLoading(false);
+
+    } catch (error) {
+
+      console.log(error);
+
+      setLoading(false);
+
+      alert("AI Generation Failed");
     }
   };
 
-  const tools = [
-    "AI Blog Generator",
-    "AI Ad Generator",
-    "AI Email Generator",
-    "AI Script Generator",
-    "AI Product Description",
-    "AI Landing Page Generator",
-  ];
+  // =====================================
+  // COPY RESULT
+  // =====================================
+
+  const copyContent = () => {
+
+    navigator.clipboard.writeText(result);
+
+    alert("Copied Successfully");
+  };
+
+  // =====================================
+  // DOWNLOAD RESULT
+  // =====================================
+
+  const downloadContent = () => {
+
+    const blob = new Blob([result], {
+      type: "text/plain",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = "fabricai-content.txt";
+
+    a.click();
+
+    alert("Downloaded Successfully");
+  };
+
+  // =====================================
+  // LOGOUT
+  // =====================================
+
+  const logout = () => {
+
+    localStorage.removeItem("user");
+
+    window.location.href = "/login";
+  };
+
+  // =====================================
+  // NAVIGATION
+  // =====================================
+
+  const goBilling = () => {
+    window.location.href = "/billing";
+  };
+
+  const goSettings = () => {
+    alert("Settings Coming Soon");
+  };
+
+  const goSaved = () => {
+    alert("Saved Content Coming Soon");
+  };
+
+  // =====================================
+  // UI
+  // =====================================
 
   return (
     <div
       style={{
         display: "flex",
+        background: "#020617",
         minHeight: "100vh",
-        background: "#050816",
         color: "white",
         fontFamily: "Arial",
       }}
     >
+
       {/* SIDEBAR */}
+
       <div
         style={{
           width: "260px",
-          background: "#0d1325",
-          padding: "30px 20px",
-          borderRight: "1px solid #1f2b46",
+          background: "#081028",
+          padding: "25px",
+          borderRight: "1px solid #1e293b",
         }}
       >
+
         <h1
           style={{
-            fontSize: "30px",
-            marginBottom: "40px",
             color: "#3b82f6",
+            marginBottom: "40px",
           }}
         >
           FabricAI
         </h1>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-          {[
-            "Dashboard",
-            "AI Writer",
-            "Blog Generator",
-            "Ad Generator",
-            "Email Generator",
-            "Landing Pages",
-            "Saved Content",
-            "Billing",
-            "Settings",
-            "Logout",
-          ].map((item, index) => (
-            <button
-              key={index}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "white",
-                fontSize: "18px",
-                textAlign: "left",
-                padding: "12px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                transition: "0.3s",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "#1d4ed8";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "transparent";
-              }}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
+        <SidebarButton text="Dashboard" />
 
-        {/* PLAN CARD */}
+        <SidebarButton
+          text="AI Writer"
+          onClick={() =>
+            window.scrollTo({
+              top: 300,
+              behavior: "smooth",
+            })
+          }
+        />
+
+        <SidebarButton
+          text="Blog Generator"
+          onClick={() =>
+            generateContent("blog")
+          }
+        />
+
+        <SidebarButton
+          text="Ad Generator"
+          onClick={() =>
+            generateContent("ads")
+          }
+        />
+
+        <SidebarButton
+          text="Email Generator"
+          onClick={() =>
+            generateContent("email")
+          }
+        />
+
+        <SidebarButton
+          text="Landing Pages"
+          onClick={() =>
+            generateContent("landing")
+          }
+        />
+
+        <SidebarButton
+          text="Saved Content"
+          onClick={goSaved}
+        />
+
+        <SidebarButton
+          text="Billing"
+          onClick={goBilling}
+        />
+
+        <SidebarButton
+          text="Settings"
+          onClick={goSettings}
+        />
+
+        <SidebarButton
+          text="Logout"
+          onClick={logout}
+        />
+
+        {/* PRO CARD */}
+
         <div
           style={{
-            marginTop: "50px",
-            background: "#1d4ed8",
+            background: "#2563eb",
             padding: "20px",
             borderRadius: "20px",
+            marginTop: "40px",
           }}
         >
           <h3>PRO PLAN</h3>
 
-          <p style={{ marginTop: "10px", color: "#dbeafe" }}>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#dbeafe",
+            }}
+          >
             Unlimited AI generations
           </p>
 
           <button
+            onClick={goBilling}
             style={{
-              marginTop: "20px",
+              marginTop: "15px",
               width: "100%",
               padding: "12px",
               border: "none",
               borderRadius: "10px",
               background: "white",
-              color: "#1d4ed8",
+              color: "#2563eb",
               fontWeight: "bold",
               cursor: "pointer",
             }}
@@ -141,189 +249,214 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
-      <div style={{ flex: 1, padding: "40px" }}>
-        {/* TOP BAR */}
+      {/* MAIN */}
+
+      <div
+        style={{
+          flex: 1,
+          padding: "40px",
+        }}
+      >
+
+        {/* HEADER */}
+
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginBottom: "40px",
+            alignItems: "center",
           }}
         >
           <div>
-            <h1 style={{ fontSize: "45px", marginBottom: "10px" }}>
+            <h1
+              style={{
+                fontSize: "42px",
+                marginBottom: "10px",
+              }}
+            >
               Welcome Back 👋
             </h1>
 
-            <p style={{ color: "#94a3b8", fontSize: "18px" }}>
-              Generate high-converting AI content instantly
+            <p
+              style={{
+                color: "#94a3b8",
+              }}
+            >
+              Generate high converting AI content instantly
             </p>
           </div>
 
           <div
             style={{
-              width: "60px",
-              height: "60px",
+              width: "45px",
+              height: "45px",
               borderRadius: "50%",
-              background: "#1d4ed8",
+              background: "#2563eb",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "24px",
-              fontWeight: "bold",
             }}
           >
             N
           </div>
         </div>
 
-        {/* STATS CARDS */}
+        {/* STATS */}
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
             gap: "20px",
-            marginBottom: "40px",
+            marginTop: "40px",
           }}
         >
-          {[
-            {
-              title: "Total Generations",
-              value: "12,480",
-            },
-            {
-              title: "Saved Projects",
-              value: "348",
-            },
-            {
-              title: "Pro Plan",
-              value: "ACTIVE",
-            },
-            {
-              title: "Affiliate Earnings",
-              value: "₹24,500",
-            },
-          ].map((card, index) => (
-            <div
-              key={index}
-              style={{
-                background: "#0f172a",
-                padding: "30px",
-                borderRadius: "20px",
-                border: "1px solid #1e293b",
-              }}
-            >
-              <p style={{ color: "#94a3b8", marginBottom: "10px" }}>
-                {card.title}
-              </p>
+          <Card
+            title="Total Generations"
+            value="12,480"
+          />
 
-              <h2 style={{ fontSize: "34px" }}>{card.value}</h2>
-            </div>
-          ))}
+          <Card
+            title="Saved Projects"
+            value="348"
+          />
+
+          <Card
+            title="Pro Plan"
+            value="ACTIVE"
+          />
+
+          <Card
+            title="Affiliate Earnings"
+            value="₹24,500"
+          />
         </div>
 
-        {/* AI INPUT */}
+        {/* GENERATOR */}
+
         <div
           style={{
-            background: "#0f172a",
-            padding: "30px",
+            background: "#081028",
+            padding: "25px",
             borderRadius: "20px",
-            border: "1px solid #1e293b",
-            marginBottom: "40px",
+            marginTop: "30px",
           }}
         >
-          <h2 style={{ marginBottom: "20px", fontSize: "30px" }}>
-            AI Content Generator
-          </h2>
+
+          <h2>AI Content Generator</h2>
 
           <textarea
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) =>
+              setPrompt(e.target.value)
+            }
             placeholder="Describe your business, product, or content idea..."
             style={{
               width: "100%",
-              height: "180px",
+              height: "120px",
+              marginTop: "20px",
               background: "#020617",
-              color: "white",
               border: "1px solid #334155",
               borderRadius: "15px",
               padding: "20px",
-              fontSize: "18px",
-              marginBottom: "30px",
+              color: "white",
+              fontSize: "16px",
             }}
           />
+
+          {/* BUTTONS */}
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-              gap: "20px",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(220px,1fr))",
+              gap: "15px",
+              marginTop: "20px",
             }}
           >
-            {tools.map((tool, index) => (
-              <button
-                key={index}
-                onClick={() => generateContent(tool)}
-                style={{
-                  padding: "18px",
-                  border: "none",
-                  borderRadius: "15px",
-                  background: "#2563eb",
-                  color: "white",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  cursor: "pointer",
-                }}
-              >
-                {tool}
-              </button>
-            ))}
+
+            <ToolButton
+              text="AI Blog Generator"
+              onClick={() =>
+                generateContent("blog")
+              }
+            />
+
+            <ToolButton
+              text="AI Ad Generator"
+              onClick={() =>
+                generateContent("ads")
+              }
+            />
+
+            <ToolButton
+              text="AI Email Generator"
+              onClick={() =>
+                generateContent("email")
+              }
+            />
+
+            <ToolButton
+              text="AI Script Generator"
+              onClick={() =>
+                generateContent("script")
+              }
+            />
+
+            <ToolButton
+              text="AI Product Description"
+              onClick={() =>
+                generateContent("product")
+              }
+            />
+
+            <ToolButton
+              text="AI Landing Page Generator"
+              onClick={() =>
+                generateContent("landing")
+              }
+            />
           </div>
         </div>
 
-        {/* OUTPUT */}
+        {/* RESULT */}
+
         <div
           style={{
-            background: "#0f172a",
-            padding: "30px",
+            background: "#081028",
+            padding: "25px",
             borderRadius: "20px",
-            border: "1px solid #1e293b",
+            marginTop: "30px",
           }}
         >
+
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              marginBottom: "20px",
+              alignItems: "center",
             }}
           >
-            <h2 style={{ fontSize: "28px" }}>Generated Content</h2>
+            <h2>Generated Content</h2>
 
-            <div style={{ display: "flex", gap: "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
               <button
-                onClick={() => navigator.clipboard.writeText(result)}
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "10px",
-                  background: "#1d4ed8",
-                  color: "white",
-                  cursor: "pointer",
-                }}
+                onClick={copyContent}
+                style={smallButton}
               >
                 Copy
               </button>
 
               <button
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "10px",
-                  background: "#0ea5e9",
-                  color: "white",
-                  cursor: "pointer",
-                }}
+                onClick={downloadContent}
+                style={smallButton}
               >
                 Download
               </button>
@@ -333,56 +466,139 @@ export default function Dashboard() {
           <div
             style={{
               background: "#020617",
-              minHeight: "300px",
               borderRadius: "15px",
-              padding: "25px",
-              color: "#e2e8f0",
-              lineHeight: "1.8",
+              padding: "20px",
+              minHeight: "180px",
+              marginTop: "20px",
               whiteSpace: "pre-wrap",
-              fontSize: "17px",
             }}
           >
             {loading
-              ? "Generating AI content..."
-              : result || "Your AI-generated content will appear here."}
+              ? "Generating AI Content..."
+              : result ||
+                "Your AI generated content will appear here."}
           </div>
         </div>
 
         {/* HISTORY */}
+
         <div
           style={{
-            marginTop: "40px",
-            background: "#0f172a",
-            padding: "30px",
+            background: "#081028",
+            padding: "25px",
             borderRadius: "20px",
-            border: "1px solid #1e293b",
+            marginTop: "30px",
           }}
         >
-          <h2 style={{ marginBottom: "20px", fontSize: "28px" }}>
-            Recent AI History
-          </h2>
 
-          {[
-            "Facebook Ads for Fitness Product",
-            "AI Blog about Digital Marketing",
-            "Email Campaign for SaaS Product",
-            "Landing Page for AI Startup",
-          ].map((history, index) => (
-            <div
-              key={index}
-              style={{
-                padding: "18px",
-                background: "#020617",
-                borderRadius: "12px",
-                marginBottom: "15px",
-                border: "1px solid #1e293b",
-              }}
-            >
-              {history}
-            </div>
-          ))}
+          <h2>Recent AI History</h2>
+
+          <div
+            style={{
+              marginTop: "20px",
+            }}
+          >
+            {history.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  background: "#020617",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  marginBottom: "10px",
+                }}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+// =====================================
+// COMPONENTS
+// =====================================
+
+function SidebarButton({
+  text,
+  onClick,
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: "100%",
+        textAlign: "left",
+        padding: "14px",
+        background: "transparent",
+        border: "none",
+        color: "white",
+        borderRadius: "10px",
+        marginBottom: "10px",
+        cursor: "pointer",
+      }}
+    >
+      {text}
+    </button>
+  );
+}
+
+function ToolButton({
+  text,
+  onClick,
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: "16px",
+        border: "none",
+        borderRadius: "12px",
+        background: "#2563eb",
+        color: "white",
+        fontWeight: "bold",
+        cursor: "pointer",
+      }}
+    >
+      {text}
+    </button>
+  );
+}
+
+function Card({
+  title,
+  value,
+}) {
+  return (
+    <div
+      style={{
+        background: "#081028",
+        padding: "25px",
+        borderRadius: "20px",
+      }}
+    >
+      <p
+        style={{
+          color: "#94a3b8",
+          marginBottom: "10px",
+        }}
+      >
+        {title}
+      </p>
+
+      <h1>{value}</h1>
+    </div>
+  );
+}
+
+const smallButton = {
+  padding: "10px 18px",
+  border: "none",
+  borderRadius: "10px",
+  background: "#2563eb",
+  color: "white",
+  cursor: "pointer",
+};
