@@ -1,128 +1,143 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import Razorpay from "razorpay";
-import Groq from "groq-sdk";
+import axios from "axios";
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
 
-/* ======================================
-   GROQ AI
-====================================== */
+const PORT = process.env.PORT || 10000;
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
-
-/* ======================================
-   RAZORPAY
-====================================== */
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
-/* ======================================
-   HOME ROUTE
-====================================== */
+// ==========================================
+// TEST ROUTE
+// ==========================================
 
 app.get("/", (req, res) => {
   res.send("FabricAI Backend Running");
 });
 
-/* ======================================
-   AI GENERATOR
-====================================== */
+// ==========================================
+// AI GENERATE ROUTE
+// ==========================================
 
-app.post("/api/ai/generate", async (req, res) => {
+app.post("/api/generate", async (req, res) => {
+
   try {
 
-    const { prompt } = req.body;
+    const { prompt, type } = req.body;
 
     if (!prompt) {
       return res.status(400).json({
-        error: "Prompt required",
+        error: "Prompt Required",
       });
     }
 
-    const completion =
-      await groq.chat.completions.create({
+    let finalPrompt = "";
+
+    // ======================================
+    // PROMPT TYPES
+    // ======================================
+
+    switch (type) {
+
+      case "blog":
+        finalPrompt =
+          `Write a professional SEO blog about: ${prompt}`;
+        break;
+
+      case "ads":
+        finalPrompt =
+          `Write high converting Facebook ads about: ${prompt}`;
+        break;
+
+      case "email":
+        finalPrompt =
+          `Write a marketing email about: ${prompt}`;
+        break;
+
+      case "script":
+        finalPrompt =
+          `Write a YouTube script about: ${prompt}`;
+        break;
+
+      case "product":
+        finalPrompt =
+          `Write product description about: ${prompt}`;
+        break;
+
+      case "landing":
+        finalPrompt =
+          `Write a landing page copy about: ${prompt}`;
+        break;
+
+      default:
+        finalPrompt =
+          `Write professional content about: ${prompt}`;
+    }
+
+    // ======================================
+    // GROQ API
+    // ======================================
+
+    const response = await axios.post(
+      "https://api.groq.com/openai/v1/chat/completions",
+
+      {
+        model: "llama3-70b-8192",
+
         messages: [
           {
             role: "user",
-            content: prompt,
+            content: finalPrompt,
           },
         ],
 
-        model: "llama-3.3-70b-versatile",
-      });
+        temperature: 0.7,
+      },
+
+      {
+        headers: {
+          Authorization:
+            `Bearer ${process.env.GROQ_API_KEY}`,
+
+          "Content-Type":
+            "application/json",
+        },
+      }
+    );
+
+    const result =
+      response.data.choices[0].message.content;
 
     res.json({
-      result:
-        completion.choices[0].message.content,
+      success: true,
+      result,
     });
 
   } catch (error) {
 
-    console.log(error);
+    console.log(
+      error.response?.data || error.message
+    );
 
     res.status(500).json({
-      error: "AI generation failed",
+      success: false,
+      error: "AI Generation Failed",
     });
   }
 });
 
-/* ======================================
-   PAYMENT
-====================================== */
-
-app.post(
-  "/api/payment/create-order",
-  async (req, res) => {
-    try {
-
-      const { amount } = req.body;
-
-      const options = {
-        amount: Number(amount) * 100,
-        currency: "INR",
-        receipt:
-          "receipt_" + Date.now(),
-      };
-
-      const order =
-        await razorpay.orders.create(
-          options
-        );
-
-      res.json(order);
-
-    } catch (error) {
-
-      console.log(error);
-
-      res.status(500).json({
-        error: "Payment failed",
-      });
-    }
-  }
-);
-
-/* ======================================
-   SERVER
-====================================== */
-
-const PORT =
-  process.env.PORT || 10000;
+// ==========================================
+// SERVER
+// ==========================================
 
 app.listen(PORT, () => {
   console.log(
-    `Server running on ${PORT}`
+    `Server running on port ${PORT}`
   );
 });
