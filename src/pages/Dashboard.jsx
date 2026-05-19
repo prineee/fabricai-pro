@@ -1,199 +1,190 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
-function Dashboard() {
+export default function Dashboard() {
+  const [prompt, setPrompt] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const generateContent = async (type) => {
+    if (!prompt) {
+      alert("Please enter your topic");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://fabricai-backend.onrender.com/api/ai/generate",
+        {
+          prompt: `Create a professional ${type} for: ${prompt}`,
+        }
+      );
+
+      setResult(response.data.result);
+    } catch (error) {
+      console.log(error);
+      alert("AI Generation Failed");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div
       style={{
+        background: "#020617",
         minHeight: "100vh",
-        background: "#0f172a",
         color: "white",
+        padding: "40px",
         fontFamily: "Arial",
       }}
     >
-      {/* Navbar */}
-      <div
+      <h1
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "20px 40px",
-          borderBottom: "1px solid #1e293b",
-          background: "#111827",
+          textAlign: "center",
+          fontSize: "55px",
+          marginBottom: "20px",
         }}
       >
-        <h2>FabricAI Pro</h2>
+        FabricAI Pro Dashboard
+      </h1>
 
-        <div style={{ display: "flex", gap: "20px" }}>
-          <Link to="/" style={linkStyle}>
-            Home
-          </Link>
+      <p
+        style={{
+          textAlign: "center",
+          color: "#cbd5e1",
+          marginBottom: "50px",
+          fontSize: "20px",
+        }}
+      >
+        Generate business content instantly using AI
+      </p>
 
-          <Link to="/billing" style={linkStyle}>
-            Billing
-          </Link>
+      {/* INPUT BOX */}
 
-          <Link to="/login" style={linkStyle}>
-            Logout
-          </Link>
-        </div>
+      <div
+        style={{
+          maxWidth: "1000px",
+          margin: "0 auto",
+          marginBottom: "40px",
+        }}
+      >
+        <textarea
+          placeholder="Enter your business topic..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          style={{
+            width: "100%",
+            minHeight: "180px",
+            borderRadius: "20px",
+            padding: "25px",
+            fontSize: "20px",
+            background: "#0f172a",
+            color: "white",
+            border: "1px solid #1e293b",
+            outline: "none",
+          }}
+        />
       </div>
 
-      {/* Main */}
-      <div style={{ padding: "40px" }}>
-        <h1
-          style={{
-            fontSize: "42px",
-            marginBottom: "10px",
-          }}
+      {/* TOOLS */}
+
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+          gap: "25px",
+          marginBottom: "60px",
+        }}
+      >
+        <button style={buttonStyle} onClick={() => generateContent("Blog Article")}>
+          AI Blog Generator
+        </button>
+
+        <button style={buttonStyle} onClick={() => generateContent("Facebook Ad Copy")}>
+          AI Ad Generator
+        </button>
+
+        <button style={buttonStyle} onClick={() => generateContent("Marketing Email")}>
+          AI Email Generator
+        </button>
+
+        <button style={buttonStyle} onClick={() => generateContent("YouTube Script")}>
+          AI Script Generator
+        </button>
+
+        <button
+          style={buttonStyle}
+          onClick={() => generateContent("Product Description")}
         >
-          Dashboard
-        </h1>
+          AI Product Description
+        </button>
 
-        <p
-          style={{
-            color: "#94a3b8",
-            marginBottom: "40px",
-          }}
+        <button
+          style={buttonStyle}
+          onClick={() => generateContent("Landing Page Copy")}
         >
-          Welcome to your AI business control center.
-        </p>
-
-        {/* Cards */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-            gap: "25px",
-          }}
-        >
-          <div style={cardStyle}>
-            <h2>Users</h2>
-            <h1>124</h1>
-            <p>Active platform users</p>
-          </div>
-
-          <div style={cardStyle}>
-            <h2>Revenue</h2>
-            <h1>₹48,920</h1>
-            <p>This month earnings</p>
-          </div>
-
-          <div style={cardStyle}>
-            <h2>Orders</h2>
-            <h1>312</h1>
-            <p>Total product sales</p>
-          </div>
-
-          <div style={cardStyle}>
-            <h2>AI Requests</h2>
-            <h1>18K</h1>
-            <p>Processed AI prompts</p>
-          </div>
-        </div>
-
-        {/* Sections */}
-        <div
-          style={{
-            marginTop: "50px",
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            gap: "30px",
-          }}
-        >
-          {/* Activity */}
-          <div
-            style={{
-              background: "#111827",
-              borderRadius: "20px",
-              padding: "30px",
-            }}
-          >
-            <h2 style={{ marginBottom: "25px" }}>Recent Activity</h2>
-
-            <div style={activityStyle}>
-              <span>New payment received</span>
-              <span>₹499</span>
-            </div>
-
-            <div style={activityStyle}>
-              <span>New customer signup</span>
-              <span>+1 User</span>
-            </div>
-
-            <div style={activityStyle}>
-              <span>AI usage increased</span>
-              <span>+320 prompts</span>
-            </div>
-
-            <div style={activityStyle}>
-              <span>Affiliate sale generated</span>
-              <span>₹199</span>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div
-            style={{
-              background: "#111827",
-              borderRadius: "20px",
-              padding: "30px",
-            }}
-          >
-            <h2 style={{ marginBottom: "25px" }}>Quick Actions</h2>
-
-            <button style={buttonStyle}>
-              Launch AI Chat
-            </button>
-
-            <button style={buttonStyle}>
-              Create Campaign
-            </button>
-
-            <button style={buttonStyle}>
-              Manage Billing
-            </button>
-
-            <button style={buttonStyle}>
-              View Analytics
-            </button>
-          </div>
-        </div>
+          AI Landing Page Generator
+        </button>
       </div>
+
+      {/* LOADING */}
+
+      {loading && (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "25px",
+            marginBottom: "30px",
+          }}
+        >
+          Generating AI Content...
+        </div>
+      )}
+
+      {/* RESULT */}
+
+      {result && (
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            background: "#0f172a",
+            padding: "40px",
+            borderRadius: "25px",
+            lineHeight: "35px",
+            fontSize: "18px",
+            whiteSpace: "pre-wrap",
+            border: "1px solid #1e293b",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom: "30px",
+              fontSize: "40px",
+            }}
+          >
+            AI Generated Content
+          </h2>
+
+          {result}
+        </div>
+      )}
     </div>
   );
 }
 
-const linkStyle = {
-  color: "white",
-  textDecoration: "none",
-  fontSize: "17px",
-};
-
-const cardStyle = {
-  background: "#111827",
-  padding: "30px",
-  borderRadius: "20px",
-  border: "1px solid #1e293b",
-};
-
-const activityStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "15px 0",
-  borderBottom: "1px solid #1e293b",
-};
-
 const buttonStyle = {
-  width: "100%",
+  padding: "22px",
+  borderRadius: "16px",
+  border: "none",
   background: "#2563eb",
   color: "white",
-  border: "none",
-  padding: "15px",
-  borderRadius: "12px",
-  marginBottom: "15px",
+  fontSize: "18px",
+  fontWeight: "bold",
   cursor: "pointer",
-  fontSize: "16px",
 };
-
-export default Dashboard;
