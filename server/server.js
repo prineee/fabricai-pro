@@ -40,33 +40,36 @@ app.get("/", (req, res) => {
    AI GENERATOR ROUTE
 ========================================= */
 
-app.post("/api/ai/generate", async (req, res) => {
+    app.post("/api/ai/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
 
     if (!prompt) {
       return res.status(400).json({
-        error: "Prompt is required",
+        error: "Prompt required",
       });
     }
 
-    const completion = await groq.chat.completions.create({
+    console.log("AI Prompt:", prompt);
+
+    const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
           role: "user",
           content: prompt,
         },
       ],
-      model: "llama3-70b-8192",
+      model: "llama-3.3-70b-versatile",
     });
 
-    const result = completion.choices[0].message.content;
+    console.log(chatCompletion);
 
     res.json({
-      result,
+      result: chatCompletion.choices[0].message.content,
     });
   } catch (error) {
-    console.log("AI ERROR:", error);
+    console.log("FULL AI ERROR:");
+    console.log(error);
 
     res.status(500).json({
       error: "AI generation failed",
