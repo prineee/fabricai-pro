@@ -1,7 +1,4 @@
-
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import Terms from './pages/Terms';
-import RefundPolicy from './pages/RefundPolicy';import {
+import {
   BrowserRouter,
   Routes,
   Route,
@@ -12,6 +9,9 @@ import Billing from "./pages/Billing";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import Terms from "./pages/Terms";
 
 export default function App() {
   return (
@@ -19,37 +19,35 @@ export default function App() {
       <Routes>
 
         {/* LANDING PAGE */}
-        <Route
-          path="/"
-          element={<LandingPage />}
-        />
+        <Route path="/" element={<LandingPage />} />
 
-        {/* BILLING PAGE */}
-        <Route
-          path="/billing"
-          element={<Billing />}
-        />
+        {/* BILLING */}
+        <Route path="/billing" element={<Billing />} />
 
         {/* DASHBOARD */}
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* LOGIN */}
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
         {/* REGISTER */}
+        <Route path="/register" element={<Register />} />
+
+        {/* LEGAL */}
         <Route
-          path="/register"
-          element={<Register />}
+          path="/privacy-policy"
+          element={<PrivacyPolicy />}
         />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-<Route path="/terms" element={<Terms />} />
-<Route path="/refund-policy" element={<RefundPolicy />} />
+
+        <Route
+          path="/refund-policy"
+          element={<RefundPolicy />}
+        />
+
+        <Route
+          path="/terms"
+          element={<Terms />}
+        />
 
       </Routes>
     </BrowserRouter>
