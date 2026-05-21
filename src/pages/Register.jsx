@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
 } from "firebase/auth";
 
 export default function Register() {
@@ -12,7 +13,11 @@ export default function Register() {
   const auth = getAuth();
 
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -21,17 +26,41 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       setLoading(true);
+
       setError("");
 
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
+      if (
+        !email ||
+        !password ||
+        !confirmPassword
+      ) {
+        setError("Please fill all fields");
+        setLoading(false);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      await sendEmailVerification(
+        userCredential.user
       );
 
-      alert("Account Created Successfully");
+      alert(
+        "Verification email sent successfully"
+      );
 
-      navigate("/dashboard");
+      navigate("/login");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -62,7 +91,7 @@ export default function Register() {
         <h1
           style={{
             color: "white",
-            fontSize: "60px",
+            fontSize: "50px",
             marginBottom: "30px",
           }}
         >
@@ -82,32 +111,34 @@ export default function Register() {
 
         <input
           type="email"
-          placeholder="Enter Email"
+          placeholder="Email Address"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            border: "none",
-            fontSize: "20px",
-          }}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          style={inputStyle}
         />
 
         <input
           type="password"
-          placeholder="Enter Password"
+          placeholder="Create Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "20px",
-            marginBottom: "30px",
-            borderRadius: "10px",
-            border: "none",
-            fontSize: "20px",
-          }}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+          style={inputStyle}
+        />
+
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) =>
+            setConfirmPassword(
+              e.target.value
+            )
+          }
+          style={inputStyle}
         />
 
         <button
@@ -115,31 +146,33 @@ export default function Register() {
           disabled={loading}
           style={{
             width: "100%",
-            padding: "20px",
+            padding: "18px",
             background: "#2563eb",
             color: "white",
             border: "none",
-            borderRadius: "12px",
-            fontSize: "22px",
+            borderRadius: "10px",
+            fontSize: "20px",
             cursor: "pointer",
-            fontWeight: "bold",
+            marginTop: "10px",
           }}
         >
-          {loading ? "Creating..." : "Register"}
+          {loading
+            ? "Creating..."
+            : "Register"}
         </button>
 
         <p
           style={{
             color: "white",
             marginTop: "30px",
-            fontSize: "20px",
+            textAlign: "center",
           }}
         >
           Already have account?{" "}
           <Link
             to="/login"
             style={{
-              color: "#9333ea",
+              color: "#3b82f6",
             }}
           >
             Login
@@ -149,3 +182,12 @@ export default function Register() {
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "18px",
+  marginBottom: "20px",
+  borderRadius: "10px",
+  border: "none",
+  fontSize: "18px",
+};

@@ -8,7 +8,7 @@ import LandingPage from "./pages/LandingPage";
 import Billing from "./pages/Billing";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Register from "./pages/Register.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Terms from "./pages/Terms";
