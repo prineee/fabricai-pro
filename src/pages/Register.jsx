@@ -1,39 +1,35 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import { useNavigate, Link } from "react-router-dom";
-import { db } from "../firebase";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
-  doc,
-  setDoc
-} from "firebase/firestore";
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 export default function Register() {
   const navigate = useNavigate();
 
+  const auth = getAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
 
-  const registerUser = async (e) => {
-    e.preventDefault();
-
+  const handleRegister = async () => {
     try {
       setLoading(true);
       setError("");
 
-    await setDoc(doc(db, "users", user.uid), {
-  uid: user.uid,
-  email: user.email,
-  plan: "starter",
-  country: "india",
-  createdAt: new Date(),
-  totalGenerations: 0,
-  affiliateId: "",
-  referralCount: 0
-});
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      alert("Account Created Successfully");
 
       navigate("/dashboard");
     } catch (err) {
@@ -47,81 +43,109 @@ export default function Register() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#000",
-        color: "#fff",
+        background: "#020617",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        padding: "20px",
       }}
     >
-      <form
-        onSubmit={registerUser}
+      <div
         style={{
-          width: "400px",
-          background: "#111",
-          padding: "30px",
-          borderRadius: "12px",
+          width: "100%",
+          maxWidth: "600px",
+          background: "#0f172a",
+          padding: "50px",
+          borderRadius: "20px",
         }}
       >
-        <h1>Create Account</h1>
+        <h1
+          style={{
+            color: "white",
+            fontSize: "60px",
+            marginBottom: "30px",
+          }}
+        >
+          Create Account
+        </h1>
 
         {error && (
-          <p style={{ color: "red" }}>
+          <p
+            style={{
+              color: "red",
+              marginBottom: "20px",
+            }}
+          >
             {error}
           </p>
         )}
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Enter Email"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
           style={{
             width: "100%",
-            padding: "12px",
-            marginTop: "15px",
+            padding: "20px",
+            marginBottom: "20px",
+            borderRadius: "10px",
+            border: "none",
+            fontSize: "20px",
           }}
         />
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Enter Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
           style={{
             width: "100%",
-            padding: "12px",
-            marginTop: "15px",
+            padding: "20px",
+            marginBottom: "30px",
+            borderRadius: "10px",
+            border: "none",
+            fontSize: "20px",
           }}
         />
 
         <button
-          type="submit"
+          onClick={handleRegister}
           disabled={loading}
           style={{
             width: "100%",
-            padding: "12px",
-            marginTop: "20px",
+            padding: "20px",
             background: "#2563eb",
-            color: "#fff",
+            color: "white",
             border: "none",
+            borderRadius: "12px",
+            fontSize: "22px",
             cursor: "pointer",
+            fontWeight: "bold",
           }}
         >
           {loading ? "Creating..." : "Register"}
         </button>
 
-        <p style={{ marginTop: "20px" }}>
+        <p
+          style={{
+            color: "white",
+            marginTop: "30px",
+            fontSize: "20px",
+          }}
+        >
           Already have account?{" "}
-          <Link to="/login">
+          <Link
+            to="/login"
+            style={{
+              color: "#9333ea",
+            }}
+          >
             Login
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
