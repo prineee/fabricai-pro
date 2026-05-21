@@ -65,12 +65,6 @@ function App() {
 
         {/* SIGNUP */}
 
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
-
-
 
         {/* FORGOT PASSWORD */}
 
