@@ -1,6 +1,26 @@
+import { useEffect } from "react";
+
 import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function Billing() {
+
+  useEffect(() => {
+
+    const script =
+      document.createElement("script");
+
+    script.src =
+      "https://cdn.razorpay.com/static/widget/subscription-button.js";
+
+    script.async = true;
+
+    document
+      .getElementById(
+        "razorpay-pro-button"
+      )
+      ?.appendChild(script);
+
+  }, []);
 
   return (
     <DashboardLayout>
@@ -23,7 +43,7 @@ export default function Billing() {
         }}
       >
 
-        {/* FREE PLAN */}
+        {/* FREE */}
 
         <div style={cardStyle}>
 
@@ -59,7 +79,7 @@ export default function Billing() {
 
         </div>
 
-        {/* PRO PLAN */}
+        {/* PRO */}
 
         <div style={cardStyle}>
 
@@ -88,28 +108,17 @@ export default function Billing() {
           </p>
 
           <div
+            id="razorpay-pro-button"
+            data-subscription_button_id="pl_SsovJVz96Z8h0e"
+            data-button_theme="brand-color"
             style={{
               marginTop: "25px",
             }}
-          >
-
-            <form>
-
-              <script
-                src="https://cdn.razorpay.com/static/widget/subscription-button.js"
-                data-subscription_button_id="pl_SsovJVz96Z8h0e"
-                data-button_theme="brand-color"
-                async
-              >
-              </script>
-
-            </form>
-
-          </div>
+          />
 
         </div>
 
-        {/* AGENCY PLAN */}
+        {/* AGENCY */}
 
         <div style={cardStyle}>
 
@@ -137,25 +146,18 @@ export default function Billing() {
             ✅ Commercial License
           </p>
 
-          <div
-            style={{
-              marginTop: "25px",
-            }}
+          <a
+            href="https://rzp.io"
+            target="_blank"
           >
 
-            <form>
+            <button
+              style={upgradeButton}
+            >
+              Upgrade To Agency
+            </button>
 
-              <script
-                src="https://cdn.razorpay.com/static/widget/subscription-button.js"
-                data-subscription_button_id="pl_SsovJVz96Z8h0e"
-                data-button_theme="brand-color"
-                async
-              >
-              </script>
-
-            </form>
-
-          </div>
+          </a>
 
         </div>
 
@@ -198,4 +200,16 @@ const disabledButton = {
   border: "none",
   borderRadius: "12px",
   fontSize: "18px",
+};
+
+const upgradeButton = {
+  width: "100%",
+  padding: "16px",
+  marginTop: "25px",
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  fontSize: "18px",
+  cursor: "pointer",
 };
