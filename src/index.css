@@ -12,3 +12,22 @@ body {
 .auth-input::placeholder {
   color: #64748b;
 }
+input,
+textarea {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  opacity: 1 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: #000000 !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+}

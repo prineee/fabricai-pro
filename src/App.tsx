@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Pricing from "./pages/Pricing";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -14,13 +14,11 @@ export default function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* HOME */}
         <Route
           path="/"
           element={<Home />}
         />
 
-        {/* AUTH */}
         <Route
           path="/register"
           element={<Register />}
@@ -31,19 +29,16 @@ export default function App() {
           element={<Login />}
         />
 
-        {/* DASHBOARD */}
         <Route
           path="/dashboard"
           element={<Dashboard />}
         />
 
-        {/* PRICING */}
         <Route
           path="/pricing"
           element={<Pricing />}
         />
 
-        {/* LEGAL */}
         <Route
           path="/privacy-policy"
           element={<PrivacyPolicy />}
