@@ -1,21 +1,161 @@
+import { useEffect } from "react";
+
 import DashboardLayout from "../../layouts/DashboardLayout";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function Billing() {
 
+  useEffect(() => {
+
+    const script =
+      document.createElement("script");
+
+    script.src =
+      "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.async = true;
+
+    document.body.appendChild(script);
+
+  }, []);
+
   function openProPlan() {
 
-    window.open(
-      "https://rzp.io/i/pl_SsumgmrUy4SzWi",
-      "_blank"
-    );
+    const options = {
+
+      key:
+        "rzp_live_SngV5d3BGmZJ1p",
+
+      amount:
+        "15000",
+
+      currency:
+        "INR",
+
+      name:
+        "FabricAI Pro",
+
+      description:
+        "PRO Monthly Subscription",
+
+      image:
+        "https://www.fabricaipro.com/logo.png",
+
+      handler: function (
+        response: any
+      ) {
+
+        alert(
+          "Payment Successful"
+        );
+
+        console.log(
+          response
+        );
+      },
+
+      prefill: {
+
+        name:
+          "FabricAI User",
+
+        email:
+          "customer@example.com",
+
+        contact:
+          "9999999999",
+      },
+
+      notes: {
+
+        address:
+          "FabricAI SaaS Platform",
+      },
+
+      theme: {
+        color:
+          "#2563eb",
+      },
+    };
+
+    const razorpay =
+      new window.Razorpay(
+        options
+      );
+
+    razorpay.open();
   }
 
   function openAgencyPlan() {
 
-    window.open(
-      "https://rzp.io/i/pl_SsupC4qEXwuWhT",
-      "_blank"
-    );
+    const options = {
+
+      key:
+        "YOUR_RAZORPAY_KEY_ID",
+
+      amount:
+        "39900",
+
+      currency:
+        "INR",
+
+      name:
+        "FabricAI Pro",
+
+      description:
+        "AGENCY Monthly Subscription",
+
+      image:
+        "https://www.fabricaipro.com/logo.png",
+
+      handler: function (
+        response: any
+      ) {
+
+        alert(
+          "Payment Successful"
+        );
+
+        console.log(
+          response
+        );
+      },
+
+      prefill: {
+
+        name:
+          "FabricAI User",
+
+        email:
+          "customer@example.com",
+
+        contact:
+          "9999999999",
+      },
+
+      notes: {
+
+        address:
+          "FabricAI SaaS Platform",
+      },
+
+      theme: {
+        color:
+          "#2563eb",
+      },
+    };
+
+    const razorpay =
+      new window.Razorpay(
+        options
+      );
+
+    razorpay.open();
   }
 
   return (
@@ -39,7 +179,7 @@ export default function Billing() {
         }}
       >
 
-        {/* FREE PLAN */}
+        {/* FREE */}
 
         <div style={cardStyle}>
 
@@ -75,7 +215,7 @@ export default function Billing() {
 
         </div>
 
-        {/* PRO PLAN */}
+        {/* PRO */}
 
         <div style={cardStyle}>
 
@@ -112,7 +252,7 @@ export default function Billing() {
 
         </div>
 
-        {/* AGENCY PLAN */}
+        {/* AGENCY */}
 
         <div style={cardStyle}>
 
