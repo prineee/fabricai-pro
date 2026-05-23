@@ -1,159 +1,200 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+import {
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
+import { auth } from "../firebase";
+
+export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [loading, setLoading] = useState(false);
 
+  const [message, setMessage] = useState("");
 
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
 
-  const login = () => {
+      setMessage("");
 
-    if (!email || !password) {
+      if (!email || !password) {
+        setMessage("Please fill all fields");
+        setLoading(false);
+        return;
+      }
 
-      alert(
-        "Please enter email and password"
-      );
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-      return;
+      if (!userCredential.user.emailVerified) {
+        setMessage(
+          "Please verify your email before login."
+        );
+
+        setLoading(false);
+
+        return;
+      }
+
+      navigate("/dashboard");
+
+    } catch (error: any) {
+
+      setMessage(error.message);
+
+    } finally {
+
+      setLoading(false);
     }
-
-
-
-    localStorage.setItem(
-      "token",
-      "fabricai_token"
-    );
-
-
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-
-        name: "Naveen",
-
-        email,
-
-        plan: "Demo",
-
-      })
-    );
-
-
-
-    alert(
-      "Login Successful"
-    );
-
-
-
-    navigate("/");
-
   };
 
-
-
   return (
-
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-
-      <div className="bg-white p-10 rounded-3xl shadow-2xl w-[420px]">
-
-        <h1 className="text-4xl font-black mb-8">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#020617",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "550px",
+          background: "#0f172a",
+          padding: "50px",
+          borderRadius: "24px",
+          border: "1px solid #1e293b",
+          boxShadow:
+            "0 0 40px rgba(0,0,0,0.5)",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "60px",
+            color: "white",
+            marginBottom: "20px",
+            fontWeight: "bold",
+          }}
+        >
           Login
         </h1>
 
+        {message && (
+          <div
+            style={{
+              marginBottom: "25px",
+              color: "#38bdf8",
+              fontSize: "18px",
+            }}
+          >
+            {message}
+          </div>
+        )}
 
+        {/* EMAIL */}
 
         <input
-
           type="email"
-
-          placeholder="Email"
-
+          placeholder="Email Address"
           value={email}
-
           onChange={(e) =>
-            setEmail(
-              e.target.value
-            )
+            setEmail(e.target.value)
           }
-
-          className="w-full border p-4 rounded-2xl mb-5"
+          autoComplete="off"
+          style={{
+            width: "100%",
+            padding: "20px",
+            marginBottom: "22px",
+            borderRadius: "14px",
+            border: "1px solid #475569",
+            fontSize: "18px",
+            background: "#ffffff",
+            color: "#000000",
+            outline: "none",
+            boxSizing: "border-box",
+            fontWeight: "500",
+            WebkitTextFillColor: "#000000",
+          }}
         />
 
-
+        {/* PASSWORD */}
 
         <input
-
           type="password"
-
           placeholder="Password"
-
           value={password}
-
           onChange={(e) =>
-            setPassword(
-              e.target.value
-            )
+            setPassword(e.target.value)
           }
-
-          className="w-full border p-4 rounded-2xl mb-8"
+          autoComplete="off"
+          style={{
+            width: "100%",
+            padding: "20px",
+            marginBottom: "22px",
+            borderRadius: "14px",
+            border: "1px solid #475569",
+            fontSize: "18px",
+            background: "#ffffff",
+            color: "#000000",
+            outline: "none",
+            boxSizing: "border-box",
+            fontWeight: "500",
+            WebkitTextFillColor: "#000000",
+          }}
         />
-
-
 
         <button
-
-          type="button"
-
-          onClick={login}
-
-          className="w-full bg-emerald-600 text-white p-4 rounded-2xl font-bold"
+          onClick={handleLogin}
+          style={{
+            width: "100%",
+            padding: "20px",
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            borderRadius: "14px",
+            fontSize: "22px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
         >
-          Login
+          {loading
+            ? "Logging in..."
+            : "Login"}
         </button>
 
-
-
-        <Link to="/forgot-password">
-
-          <button
-
-            type="button"
-
-            className="w-full mt-4 text-emerald-700 font-semibold"
+        <div
+          style={{
+            marginTop: "25px",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          Don't have account?{" "}
+          <Link
+            to="/register"
+            style={{
+              color: "#3b82f6",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
           >
-            Forgot Password?
-          </button>
-
-        </Link>
-
-
-
-        <Link to="/signup">
-
-          <button
-
-            type="button"
-
-            className="w-full border p-4 rounded-2xl mt-5"
-          >
-            Create Account
-          </button>
-
-        </Link>
-
+            Register
+          </Link>
+        </div>
       </div>
-
     </div>
-
   );
 }

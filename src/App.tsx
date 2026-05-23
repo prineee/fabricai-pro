@@ -13,7 +13,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* LANDING PAGE */}
+
+        {/* HOME */}
         <Route
           path="/"
           element={<Home />}
@@ -21,13 +22,13 @@ export default function App() {
 
         {/* AUTH */}
         <Route
-          path="/login"
-          element={<Login />}
+          path="/register"
+          element={<Register />}
         />
 
         <Route
-          path="/register"
-          element={<Register />}
+          path="/login"
+          element={<Login />}
         />
 
         {/* DASHBOARD */}
@@ -36,7 +37,7 @@ export default function App() {
           element={<Dashboard />}
         />
 
-        {/* BILLING */}
+        {/* PRICING */}
         <Route
           path="/pricing"
           element={<Pricing />}
@@ -57,6 +58,7 @@ export default function App() {
           path="/terms"
           element={<Terms />}
         />
+
       </Routes>
     </BrowserRouter>
   );

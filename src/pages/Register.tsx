@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -11,16 +10,13 @@ import { auth } from "../firebase";
 export default function Register() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] =
-    useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const [message, setMessage] = useState<string>("");
-
-  const handleSignup = async () => {
+  const handleRegister = async () => {
     try {
       setLoading(true);
       setMessage("");
@@ -37,12 +33,6 @@ export default function Register() {
         return;
       }
 
-      if (password.length < 6) {
-        setMessage("Password must be at least 6 characters");
-        setLoading(false);
-        return;
-      }
-
       const userCredential =
         await createUserWithEmailAndPassword(
           auth,
@@ -53,105 +43,78 @@ export default function Register() {
       await sendEmailVerification(userCredential.user);
 
       setMessage(
-        "Verification email sent successfully. Please check your inbox."
+        "Verification email sent successfully. Please check inbox."
       );
 
       setTimeout(() => {
         navigate("/login");
       }, 3000);
     } catch (error: any) {
-      setMessage(error.message || "Signup failed");
+      setMessage(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const containerStyle: React.CSSProperties = {
-    background: "#020617",
-    minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-    fontFamily: "Arial",
-  };
-
-  const cardStyle: React.CSSProperties = {
-    width: "100%",
-    maxWidth: "500px",
-    background: "#0f172a",
-    padding: "40px",
-    borderRadius: "20px",
-    border: "1px solid #1e293b",
-  };
-
-  const titleStyle: React.CSSProperties = {
-    color: "white",
-    fontSize: "50px",
-    fontWeight: "bold",
-    marginBottom: "30px",
-  };
-
-  const inputStyle = {
-  width: "100%",
-  padding: "18px",
-  marginBottom: "20px",
-  borderRadius: "12px",
-  border: "1px solid #334155",
-  fontSize: "18px",
-  background: "#e2e8f0",
-  color: "#000000",
-  outline: "none",
-  boxSizing: "border-box" as const,
-};
-
-  const buttonStyle: React.CSSProperties = {
-    width: "100%",
-    padding: "18px",
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "12px",
-    fontSize: "20px",
-    fontWeight: "bold",
-    cursor: "pointer",
-  };
-
-  const messageStyle: React.CSSProperties = {
-    color: "#38bdf8",
-    marginBottom: "20px",
-    fontSize: "16px",
-  };
-
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>Create Account</h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#020617",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "550px",
+          background: "#0f172a",
+          padding: "50px",
+          borderRadius: "24px",
+          border: "1px solid #1e293b",
+          boxShadow: "0 0 40px rgba(0,0,0,0.4)",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "64px",
+            color: "white",
+            marginBottom: "20px",
+            fontWeight: "bold",
+          }}
+        >
+          Create Account
+        </h1>
 
         {message && (
-          <p style={messageStyle}>
+          <div
+            style={{
+              marginBottom: "25px",
+              color: "#38bdf8",
+              fontSize: "18px",
+              lineHeight: "1.6",
+            }}
+          >
             {message}
-          </p>
+          </div>
         )}
 
         <input
           type="email"
           placeholder="Email Address"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
           style={inputStyle}
-          className="auth-input"
         />
 
         <input
           type="password"
           placeholder="Create Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
           style={inputStyle}
         />
 
@@ -166,18 +129,16 @@ export default function Register() {
         />
 
         <button
-          onClick={handleSignup}
+          onClick={handleRegister}
           style={buttonStyle}
         >
-          {loading
-            ? "Creating Account..."
-            : "Register"}
+          {loading ? "Creating..." : "Register"}
         </button>
 
-        <p
+        <div
           style={{
+            marginTop: "25px",
             color: "white",
-            marginTop: "20px",
             fontSize: "18px",
           }}
         >
@@ -187,12 +148,39 @@ export default function Register() {
             style={{
               color: "#3b82f6",
               textDecoration: "none",
+              fontWeight: "bold",
             }}
           >
             Login
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "20px",
+  marginBottom: "22px",
+  borderRadius: "14px",
+  border: "1px solid #475569",
+  fontSize: "18px",
+  background: "#f1f5f9",
+  color: "#000000",
+  outline: "none",
+  boxSizing: "border-box" as const,
+  fontWeight: "500",
+};
+
+const buttonStyle = {
+  width: "100%",
+  padding: "20px",
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  borderRadius: "14px",
+  fontSize: "22px",
+  fontWeight: "bold",
+  cursor: "pointer",
+};
