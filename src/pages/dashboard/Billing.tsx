@@ -2,26 +2,6 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function Billing() {
 
-  function upgradePlan(
-    plan: string
-  ) {
-
-    if (plan === "PRO") {
-
-      window.location.href =
-        "https://rzp.io/l/YOUR_PRO_LINK";
-
-    }
-
-    if (plan === "AGENCY") {
-
-      window.location.href =
-        "https://rzp.io/l/YOUR_AGENCY_LINK";
-
-    }
-
-  }
-
   return (
     <DashboardLayout>
 
@@ -31,15 +11,15 @@ export default function Billing() {
           marginBottom: "30px",
         }}
       >
-        Billing & Plans
+        Billing Plans
       </h1>
 
       <div
         style={{
           display: "grid",
           gridTemplateColumns:
-            "repeat(auto-fit,minmax(300px,1fr))",
-          gap: "25px",
+            "repeat(auto-fit,minmax(320px,1fr))",
+          gap: "30px",
         }}
       >
 
@@ -48,40 +28,30 @@ export default function Billing() {
           price="₹0"
           features={[
             "5 AI generations/day",
-            "Basic dashboard",
-            "Limited features",
+            "Basic AI tools",
           ]}
-          button="Current Plan"
         />
 
         <PlanCard
           title="PRO"
-          price="₹150/mo"
+          price="₹150/month"
           features={[
-            "Unlimited AI generations",
-            "Export tools",
-            "Premium AI",
-            "History access",
+            "Unlimited AI",
+            "Premium tools",
+            "Exports",
           ]}
-          button="Upgrade"
-          onClick={() =>
-            upgradePlan("PRO")
-          }
+          link="https://rzp.io/l/demo"
         />
 
         <PlanCard
           title="AGENCY"
-          price="₹399/mo"
+          price="₹399/month"
           features={[
             "Everything in PRO",
-            "White label",
-            "Client management",
-            "Commercial rights",
+            "Commercial license",
+            "Client access",
           ]}
-          button="Upgrade"
-          onClick={() =>
-            upgradePlan("AGENCY")
-          }
+          link="https://rzp.io/l/demo"
         />
 
       </div>
@@ -94,16 +64,15 @@ function PlanCard({
   title,
   price,
   features,
-  button,
-  onClick,
+  link,
 }: any) {
 
   return (
     <div
       style={{
         background: "#0f172a",
-        borderRadius: "20px",
         padding: "35px",
+        borderRadius: "20px",
         border: "1px solid #1e293b",
       }}
     >
@@ -112,43 +81,55 @@ function PlanCard({
 
       <h1
         style={{
-          fontSize: "48px",
           margin: "20px 0",
+          fontSize: "42px",
+          color: "#3b82f6",
         }}
       >
         {price}
       </h1>
 
-      <div>
-
-        {
-          features.map(
-            (feature: string) => (
-              <p key={feature}>
-                ✓ {feature}
-              </p>
-            )
+      {
+        features.map(
+          (feature: string) => (
+            <p
+              key={feature}
+              style={{
+                marginBottom: "15px",
+              }}
+            >
+              ✅ {feature}
+            </p>
           )
-        }
+        )
+      }
 
-      </div>
+      {
+        link && (
+          <a
+            href={link}
+            target="_blank"
+          >
 
-      <button
-        onClick={onClick}
-        style={{
-          marginTop: "30px",
-          width: "100%",
-          padding: "16px",
-          border: "none",
-          borderRadius: "12px",
-          background: "#2563eb",
-          color: "white",
-          fontSize: "18px",
-          cursor: "pointer",
-        }}
-      >
-        {button}
-      </button>
+            <button
+              style={{
+                marginTop: "30px",
+                width: "100%",
+                padding: "16px",
+                border: "none",
+                borderRadius: "12px",
+                background: "#2563eb",
+                color: "white",
+                fontSize: "18px",
+                cursor: "pointer",
+              }}
+            >
+              Upgrade
+            </button>
+
+          </a>
+        )
+      }
 
     </div>
   );

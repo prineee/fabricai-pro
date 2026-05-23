@@ -1,55 +1,63 @@
 const API_URL =
   "https://api.groq.com/openai/v1/chat/completions";
 
+const API_KEY =
+  import.meta.env.VITE_GROQ_API_KEY;
+
 export async function generateAI(
   prompt: string,
   type: string
 ) {
+
   try {
-    const systemPrompt = `
-You are an advanced AI assistant.
 
-Generate high quality ${type} content.
-Make it professional, engaging, modern and marketing optimized.
-`;
+    const response = await fetch(
+      API_URL,
+      {
+        method: "POST",
 
-    const response = await fetch(API_URL, {
-      method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
 
-      headers: {
-        "Content-Type": "application/json",
+          Authorization:
+            `Bearer ${API_KEY}`,
+        },
 
-        Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
-      },
+        body: JSON.stringify({
+          model:
+            "llama3-70b-8192",
 
-      body: JSON.stringify({
-        model: "llama3-70b-8192",
+          messages: [
+            {
+              role: "system",
 
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt,
-          },
+              content:
+                `You are an expert ${type} AI assistant.`,
+            },
 
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
 
-        temperature: 0.7,
+          temperature: 0.7,
+        }),
+      }
+    );
 
-        max_tokens: 2000,
-      }),
-    });
-
-    const data = await response.json();
+    const data =
+      await response.json();
 
     return (
-      data?.choices?.[0]?.message?.content ||
+      data?.choices?.[0]
+        ?.message?.content ||
       "No AI response"
     );
+
   } catch (error) {
+
     console.log(error);
 
     return "AI generation failed";

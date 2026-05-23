@@ -1,8 +1,17 @@
+import { useState } from "react";
+
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-
-
 export default function Settings() {
+
+  const [name, setName] =
+    useState("");
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
 
   return (
     <DashboardLayout>
@@ -16,8 +25,6 @@ export default function Settings() {
         Account Settings
       </h1>
 
-
-
       <div
         style={{
           background: "#0f172a",
@@ -28,68 +35,57 @@ export default function Settings() {
         }}
       >
 
-        <div
-          style={{
-            marginBottom: "25px",
-          }}
-        >
+        <label>
+          Full Name
+        </label>
 
-          <label style={labelStyle}>
-            Full Name
-          </label>
+        <input
+          value={name}
+          onChange={(e) =>
+            setName(e.target.value)
+          }
+          placeholder="Name"
+          style={inputStyle}
+        />
 
-          <input
-            type="text"
-            placeholder="Your Name"
-            style={inputStyle}
-          />
+        <label>
+          Email Address
+        </label>
 
-        </div>
+        <input
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          placeholder="Email"
+          style={inputStyle}
+        />
 
+        <label>
+          New Password
+        </label>
 
-
-        <div
-          style={{
-            marginBottom: "25px",
-          }}
-        >
-
-          <label style={labelStyle}>
-            Email Address
-          </label>
-
-          <input
-            type="email"
-            placeholder="Email"
-            style={inputStyle}
-          />
-
-        </div>
-
-
-
-        <div
-          style={{
-            marginBottom: "25px",
-          }}
-        >
-
-          <label style={labelStyle}>
-            New Password
-          </label>
-
-          <input
-            type="password"
-            placeholder="New Password"
-            style={inputStyle}
-          />
-
-        </div>
-
-
+        <input
+          type="password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+          placeholder="New Password"
+          style={inputStyle}
+        />
 
         <button
-          style={buttonStyle}
+          style={{
+            marginTop: "20px",
+            padding: "16px 30px",
+            borderRadius: "12px",
+            border: "none",
+            background: "#2563eb",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "18px",
+          }}
         >
           Save Changes
         </button>
@@ -100,34 +96,15 @@ export default function Settings() {
   );
 }
 
-
-
-const labelStyle = {
-  display: "block",
-  marginBottom: "10px",
-  color: "#cbd5e1",
-};
-
-
-
 const inputStyle = {
   width: "100%",
-  padding: "16px",
+  padding: "18px",
+  marginTop: "10px",
+  marginBottom: "25px",
   borderRadius: "12px",
   border: "1px solid #334155",
-  background: "#020617",
-  color: "white",
+  background: "#ffffff",
+  color: "#000000",
   fontSize: "16px",
-};
-
-
-
-const buttonStyle = {
-  background: "#2563eb",
-  color: "white",
-  border: "none",
-  padding: "16px 30px",
-  borderRadius: "12px",
-  fontSize: "16px",
-  cursor: "pointer",
+  outline: "none",
 };
