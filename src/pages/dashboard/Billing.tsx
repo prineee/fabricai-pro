@@ -1,26 +1,22 @@
-import { useEffect } from "react";
-
 import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function Billing() {
 
-  useEffect(() => {
+  function openProPlan() {
 
-    const script =
-      document.createElement("script");
+    window.open(
+      "https://rzp.io/i/pl_SsumgmrUy4SzWi",
+      "_blank"
+    );
+  }
 
-    script.src =
-      "https://cdn.razorpay.com/static/widget/subscription-button.js";
+  function openAgencyPlan() {
 
-    script.async = true;
-
-    document
-      .getElementById(
-        "razorpay-pro-button"
-      )
-      ?.appendChild(script);
-
-  }, []);
+    window.open(
+      "https://rzp.io/i/pl_SsupC4qEXwuWhT",
+      "_blank"
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -31,7 +27,7 @@ export default function Billing() {
           marginBottom: "35px",
         }}
       >
-        Billing & Subscription
+        Billing & Plans
       </h1>
 
       <div
@@ -43,7 +39,7 @@ export default function Billing() {
         }}
       >
 
-        {/* FREE */}
+        {/* FREE PLAN */}
 
         <div style={cardStyle}>
 
@@ -79,7 +75,7 @@ export default function Billing() {
 
         </div>
 
-        {/* PRO */}
+        {/* PRO PLAN */}
 
         <div style={cardStyle}>
 
@@ -96,7 +92,7 @@ export default function Billing() {
           </p>
 
           <p style={featureStyle}>
-            ✅ Premium Content
+            ✅ Premium Outputs
           </p>
 
           <p style={featureStyle}>
@@ -107,18 +103,16 @@ export default function Billing() {
             ✅ Priority Support
           </p>
 
-          <div
-            id="razorpay-pro-button"
-            data-subscription_button_id="pl_SsovJVz96Z8h0e"
-            data-button_theme="brand-color"
-            style={{
-              marginTop: "25px",
-            }}
-          />
+          <button
+            onClick={openProPlan}
+            style={upgradeButton}
+          >
+            Upgrade To PRO
+          </button>
 
         </div>
 
-        {/* AGENCY */}
+        {/* AGENCY PLAN */}
 
         <div style={cardStyle}>
 
@@ -146,18 +140,12 @@ export default function Billing() {
             ✅ Commercial License
           </p>
 
-          <a
-            href="https://rzp.io"
-            target="_blank"
+          <button
+            onClick={openAgencyPlan}
+            style={upgradeButton}
           >
-
-            <button
-              style={upgradeButton}
-            >
-              Upgrade To Agency
-            </button>
-
-          </a>
+            Upgrade To Agency
+          </button>
 
         </div>
 
@@ -177,6 +165,7 @@ const cardStyle = {
 const planTitle = {
   fontSize: "32px",
   marginBottom: "10px",
+  color: "white",
 };
 
 const priceStyle = {
@@ -194,7 +183,6 @@ const featureStyle = {
 const disabledButton = {
   width: "100%",
   padding: "16px",
-  marginTop: "25px",
   background: "#334155",
   color: "white",
   border: "none",
@@ -205,7 +193,6 @@ const disabledButton = {
 const upgradeButton = {
   width: "100%",
   padding: "16px",
-  marginTop: "25px",
   background: "#2563eb",
   color: "white",
   border: "none",
