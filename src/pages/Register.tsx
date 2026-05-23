@@ -1,15 +1,21 @@
 import { useState } from "react";
-
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
 
-import { auth } from "../firebase";
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 
-import { createUserProfile } from "../services/userService";
+import { auth, db } from "../firebase";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -34,6 +40,7 @@ export default function Register() {
   const handleSignup = async () => {
     try {
       setLoading(true);
+      setMessage("");
 
       if (
         !email ||
@@ -45,7 +52,6 @@ export default function Register() {
         );
 
         setLoading(false);
-
         return;
       }
 
@@ -57,7 +63,6 @@ export default function Register() {
         );
 
         setLoading(false);
-
         return;
       }
 
@@ -72,20 +77,25 @@ export default function Register() {
         userCredential.user
       );
 
-      await createUserProfile(
-        userCredential.user.uid,
+      await setDoc(
+        doc(
+          db,
+          "users",
+          userCredential.user.uid
+        ),
         {
           email,
           plan: "FREE",
           country: "india",
-          dailyUsage: 0,
           verified: false,
-          createdAt: new Date(),
+          dailyUsage: 0,
+          createdAt:
+            serverTimestamp(),
         }
       );
 
       setMessage(
-        "Verification email sent successfully"
+        "Verification email sent. Please check inbox/spam."
       );
 
       setTimeout(() => {
@@ -112,38 +122,39 @@ export default function Register() {
       <div
         style={{
           width: "100%",
-          maxWidth: "550px",
+          maxWidth: "500px",
           background: "#0f172a",
-          padding: "50px",
-          borderRadius: "24px",
-          border:
-            "1px solid #1e293b",
+          padding: "40px",
+          borderRadius: "20px",
+          boxShadow:
+            "0 0 40px rgba(0,0,0,0.5)",
         }}
       >
         <h1
           style={{
-            fontSize: "60px",
             color: "white",
-            marginBottom: "20px",
+            fontSize: "48px",
+            marginBottom: "30px",
           }}
         >
-          Register
+          Create Account
         </h1>
 
         {message && (
-          <div
+          <p
             style={{
               color: "#38bdf8",
               marginBottom: "20px",
+              fontSize: "16px",
             }}
           >
             {message}
-          </div>
+          </p>
         )}
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Email Address"
           value={email}
           onChange={(e) =>
             setEmail(
@@ -155,7 +166,7 @@ export default function Register() {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Create Password"
           value={password}
           onChange={(e) =>
             setPassword(
@@ -212,11 +223,11 @@ const inputStyle = {
   padding: "18px",
   marginBottom: "20px",
   borderRadius: "12px",
-  border: "1px solid #334155",
-  background: "#ffffff",
-  color: "#000000",
-  fontSize: "18px",
+  border: "none",
   outline: "none",
+  fontSize: "18px",
+  background: "#e2e8f0",
+  color: "#000000",
   boxSizing: "border-box" as const,
 };
 
