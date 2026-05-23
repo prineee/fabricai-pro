@@ -2,13 +2,60 @@ import { useState } from "react";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-export default function BlogGenerator() {
-  const [prompt, setPrompt] = useState("");
+import { generateAI } from "../../services/aiService";
 
-  const [result, setResult] = useState("");
+import { usePlan } from "../../context/PlanContext";
+
+import { canUseFeature } from "../../utils/planCheck";
+
+import { useAuth } from "../../context/AuthContext";
+
+import { saveHistory } from "../../services/historyService";
+
+export default function BlogGenerator() {
+  const [prompt, setPrompt] =
+    useState("");
+
+  const [result, setResult] =
+    useState("");
+
+  const { plan } = usePlan();
+
+  const { user } = useAuth();
 
   const generate = async () => {
-    setResult("Generating AI blog...");
+    if (!prompt) return;
+
+    if (
+      !canUseFeature(plan, "blog")
+    ) {
+      alert(
+        "Upgrade to PRO to use this feature"
+      );
+
+      return;
+    }
+
+    setResult(
+      "Generating AI content..."
+    );
+
+    const output =
+      await generateAI(
+        prompt,
+        "blog"
+      );
+
+    setResult(output);
+
+    if (user) {
+      await saveHistory(
+        user.uid,
+        prompt,
+        output,
+        "blog"
+      );
+    }
   };
 
   return (
@@ -26,7 +73,9 @@ export default function BlogGenerator() {
         placeholder="Enter blog topic..."
         value={prompt}
         onChange={(e) =>
-          setPrompt(e.target.value)
+          setPrompt(
+            e.target.value
+          )
         }
         style={{
           width: "100%",
@@ -35,7 +84,8 @@ export default function BlogGenerator() {
           padding: "20px",
           background: "#0f172a",
           color: "white",
-          border: "1px solid #334155",
+          border:
+            "1px solid #334155",
           marginBottom: "20px",
           fontSize: "18px",
         }}
@@ -63,6 +113,7 @@ export default function BlogGenerator() {
           padding: "30px",
           borderRadius: "20px",
           minHeight: "250px",
+          whiteSpace: "pre-wrap",
         }}
       >
         {result}

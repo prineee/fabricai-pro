@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -7,29 +9,55 @@ import {
 
 import { auth } from "../firebase";
 
+import { createUserProfile } from "../services/userService";
+
 export default function Register() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [email, setEmail] =
+    useState("");
 
-  const handleRegister = async () => {
+  const [password, setPassword] =
+    useState("");
+
+  const [
+    confirmPassword,
+    setConfirmPassword,
+  ] = useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [message, setMessage] =
+    useState("");
+
+  const handleSignup = async () => {
     try {
       setLoading(true);
-      setMessage("");
 
-      if (!email || !password || !confirmPassword) {
-        setMessage("Please fill all fields");
+      if (
+        !email ||
+        !password ||
+        !confirmPassword
+      ) {
+        setMessage(
+          "Please fill all fields"
+        );
+
         setLoading(false);
+
         return;
       }
 
-      if (password !== confirmPassword) {
-        setMessage("Passwords do not match");
+      if (
+        password !== confirmPassword
+      ) {
+        setMessage(
+          "Passwords do not match"
+        );
+
         setLoading(false);
+
         return;
       }
 
@@ -40,10 +68,24 @@ export default function Register() {
           password
         );
 
-      await sendEmailVerification(userCredential.user);
+      await sendEmailVerification(
+        userCredential.user
+      );
+
+      await createUserProfile(
+        userCredential.user.uid,
+        {
+          email,
+          plan: "FREE",
+          country: "india",
+          dailyUsage: 0,
+          verified: false,
+          createdAt: new Date(),
+        }
+      );
 
       setMessage(
-        "Verification email sent successfully. Please check inbox."
+        "Verification email sent successfully"
       );
 
       setTimeout(() => {
@@ -74,28 +116,25 @@ export default function Register() {
           background: "#0f172a",
           padding: "50px",
           borderRadius: "24px",
-          border: "1px solid #1e293b",
-          boxShadow: "0 0 40px rgba(0,0,0,0.4)",
+          border:
+            "1px solid #1e293b",
         }}
       >
         <h1
           style={{
-            fontSize: "64px",
+            fontSize: "60px",
             color: "white",
             marginBottom: "20px",
-            fontWeight: "bold",
           }}
         >
-          Create Account
+          Register
         </h1>
 
         {message && (
           <div
             style={{
-              marginBottom: "25px",
               color: "#38bdf8",
-              fontSize: "18px",
-              lineHeight: "1.6",
+              marginBottom: "20px",
             }}
           >
             {message}
@@ -104,17 +143,25 @@ export default function Register() {
 
         <input
           type="email"
-          placeholder="Email Address"
+          placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setEmail(
+              e.target.value
+            )
+          }
           style={inputStyle}
         />
 
         <input
           type="password"
-          placeholder="Create Password"
+          placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
           style={inputStyle}
         />
 
@@ -123,23 +170,26 @@ export default function Register() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) =>
-            setConfirmPassword(e.target.value)
+            setConfirmPassword(
+              e.target.value
+            )
           }
           style={inputStyle}
         />
 
         <button
-          onClick={handleRegister}
+          onClick={handleSignup}
           style={buttonStyle}
         >
-          {loading ? "Creating..." : "Register"}
+          {loading
+            ? "Creating..."
+            : "Register"}
         </button>
 
-        <div
+        <p
           style={{
-            marginTop: "25px",
             color: "white",
-            fontSize: "18px",
+            marginTop: "20px",
           }}
         >
           Already have account?{" "}
@@ -147,13 +197,11 @@ export default function Register() {
             to="/login"
             style={{
               color: "#3b82f6",
-              textDecoration: "none",
-              fontWeight: "bold",
             }}
           >
             Login
           </Link>
-        </div>
+        </p>
       </div>
     </div>
   );
@@ -161,26 +209,25 @@ export default function Register() {
 
 const inputStyle = {
   width: "100%",
-  padding: "20px",
-  marginBottom: "22px",
-  borderRadius: "14px",
-  border: "1px solid #475569",
-  fontSize: "18px",
-  background: "#f1f5f9",
+  padding: "18px",
+  marginBottom: "20px",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+  background: "#ffffff",
   color: "#000000",
+  fontSize: "18px",
   outline: "none",
   boxSizing: "border-box" as const,
-  fontWeight: "500",
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "20px",
+  padding: "18px",
   background: "#2563eb",
   color: "white",
   border: "none",
-  borderRadius: "14px",
-  fontSize: "22px",
+  borderRadius: "12px",
+  fontSize: "20px",
   fontWeight: "bold",
   cursor: "pointer",
 };
