@@ -6,35 +6,71 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background: "#020617",
-        color: "white",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        flexDirection: "column",
-        gap: "20px",
+        color: "white",
       }}
     >
       <h1
         style={{
-          fontSize: "60px",
+          fontSize: "64px",
+          marginBottom: "20px",
         }}
       >
         FabricAI Pro
       </h1>
 
-      <Link
-        to="/register"
+      <p
         style={{
-          background: "#2563eb",
-          padding: "15px 30px",
-          borderRadius: "12px",
-          color: "white",
-          textDecoration: "none",
-          fontSize: "20px",
+          fontSize: "22px",
+          marginBottom: "40px",
+          color: "#94a3b8",
         }}
       >
-        Get Started
-      </Link>
+        AI SaaS Platform For Content,
+        Fashion & Marketing
+      </p>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+        }}
+      >
+        <Link
+          to="/register"
+          style={{
+            padding: "16px 30px",
+            background: "#2563eb",
+            color: "white",
+            borderRadius: "12px",
+            textDecoration: "none",
+            fontSize: "18px",
+            fontWeight: "bold",
+          }}
+        >
+          Get Started
+        </Link>
+
+        <Link
+          to="/login"
+          style={{
+            padding: "16px 30px",
+            background: "#0f172a",
+            color: "white",
+            borderRadius: "12px",
+            textDecoration: "none",
+            fontSize: "18px",
+            fontWeight: "bold",
+            border:
+              "1px solid #334155",
+          }}
+        >
+          Login
+        </Link>
+      </div>
     </div>
   );
 }
