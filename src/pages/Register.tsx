@@ -92,17 +92,18 @@ export default function Register() {
     marginBottom: "30px",
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    padding: "18px",
-    marginBottom: "20px",
-    borderRadius: "12px",
-    border: "none",
-    fontSize: "18px",
-    outline: "none",
-    background: "#e2e8f0",
-    boxSizing: "border-box",
-  };
+  const inputStyle = {
+  width: "100%",
+  padding: "18px",
+  marginBottom: "20px",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+  fontSize: "18px",
+  background: "#e2e8f0",
+  color: "#000000",
+  outline: "none",
+  boxSizing: "border-box" as const,
+};
 
   const buttonStyle: React.CSSProperties = {
     width: "100%",
@@ -141,6 +142,7 @@ export default function Register() {
             setEmail(e.target.value)
           }
           style={inputStyle}
+          className="auth-input"
         />
 
         <input
