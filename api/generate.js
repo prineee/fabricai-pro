@@ -1,27 +1,15 @@
-export default async function handler(
-  req,
-  res
-) {
+module.exports = async function (req, res) {
 
   if (req.method !== "POST") {
 
     return res.status(405).json({
-      error:
-        "Method not allowed",
+      output: "Method not allowed",
     });
   }
 
   try {
 
-    const body =
-      typeof req.body === "string"
-        ? JSON.parse(req.body)
-        : req.body;
-
-    const {
-      prompt,
-      type,
-    } = body;
+    const { prompt, type } = req.body;
 
     let systemPrompt = "";
 
@@ -40,49 +28,48 @@ export default async function handler(
     else if (type === "ad") {
 
       systemPrompt =
-        "Write a high converting Facebook ad copy.";
+        "Write a high converting advertisement copy.";
     }
 
-    const response =
-      await fetch(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          method: "POST",
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
 
-          headers: {
+        headers: {
 
-            "Content-Type":
-              "application/json",
+          "Content-Type": "application/json",
 
-            Authorization:
-              `Bearer ${process.env.GROQ_API_KEY}`,
-          },
+          Authorization:
+            `Bearer ${process.env.GROQ_API_KEY}`,
+        },
 
-          body: JSON.stringify({
+        body: JSON.stringify({
 
-            model:
-              "llama3-70b-8192",
+          model: "llama3-70b-8192",
 
-            messages: [
+          messages: [
 
-              {
-                role: "system",
-                content: systemPrompt,
-              },
+            {
+              role: "system",
+              content: systemPrompt,
+            },
 
-              {
-                role: "user",
-                content: prompt,
-              },
-            ],
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
 
-            temperature: 0.7,
-          }),
-        }
-      );
+          temperature: 0.7,
+        }),
+      }
+    );
 
     const data =
       await response.json();
+
+    console.log(data);
 
     return res.status(200).json({
 
@@ -102,4 +89,4 @@ export default async function handler(
         "AI generation failed",
     });
   }
-}
+};
