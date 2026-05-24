@@ -1,21 +1,42 @@
-const API_KEY =
-  import.meta.env
-    .VITE_GROQ_API_KEY;
+const GROQ_API_KEY =
+  import.meta.env.VITE_GROQ_API_KEY;
 
 export async function generateAI(
   prompt: string,
   type: string
 ) {
 
+  if (!GROQ_API_KEY) {
+
+    return "Groq API key missing";
+  }
+
   try {
 
-    if (!API_KEY) {
+    let systemPrompt = "";
 
-      console.error(
-        "Missing Groq API Key"
-      );
+    if (type === "blog") {
 
-      return "Groq API key missing";
+      systemPrompt =
+        "Write a professional SEO optimized blog article.";
+    }
+
+    else if (type === "email") {
+
+      systemPrompt =
+        "Write a professional marketing email.";
+    }
+
+    else if (type === "ad") {
+
+      systemPrompt =
+        "Write a high converting Facebook advertisement copy.";
+    }
+
+    else {
+
+      systemPrompt =
+        "You are an AI assistant.";
     }
 
     const response =
@@ -25,11 +46,12 @@ export async function generateAI(
           method: "POST",
 
           headers: {
+
             "Content-Type":
               "application/json",
 
             Authorization:
-              `Bearer ${API_KEY}`,
+              `Bearer ${GROQ_API_KEY}`,
           },
 
           body: JSON.stringify({
@@ -41,20 +63,16 @@ export async function generateAI(
 
               {
                 role: "system",
-
-                content:
-                  `You are a professional ${type} AI assistant.`,
+                content: systemPrompt,
               },
 
               {
                 role: "user",
-
                 content: prompt,
               },
             ],
 
             temperature: 0.7,
-            max_tokens: 1200,
           }),
         }
       );
@@ -62,23 +80,11 @@ export async function generateAI(
     const data =
       await response.json();
 
-    console.log(
-      "GROQ RESPONSE:",
-      data
-    );
-
-    if (data.error) {
-
-      return (
-        "Groq Error: " +
-        data.error.message
-      );
-    }
+    console.log(data);
 
     return (
-      data?.choices?.[0]
-        ?.message?.content ||
-
+      data?.choices?.[0]?.message?.content
+      ||
       "No AI response"
     );
 
