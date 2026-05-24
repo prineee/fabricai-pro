@@ -14,7 +14,7 @@ export async function generateAI(prompt: string) {
 
     const data = await response.json();
 
-    return data.result || data.error;
+    return data.result || "No AI response";
 
   } catch (error) {
 

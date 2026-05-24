@@ -1,61 +1,55 @@
 export default async function handler(req, res) {
 
-  // ALLOW ONLY POST
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method not allowed"
+      error: "Method not allowed",
     });
   }
 
   try {
 
-    const prompt = req.body.prompt;
+    const { prompt } = req.body;
 
     if (!prompt) {
       return res.status(400).json({
-        error: "Prompt missing"
+        error: "Prompt missing",
       });
     }
 
-    // GEMINI API REQUEST
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      "https://api.groq.com/openai/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          contents: [
+          model: "llama3-8b-8192",
+          messages: [
             {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ]
-        })
+              role: "user",
+              content: prompt,
+            },
+          ],
+        }),
       }
     );
 
     const data = await response.json();
 
-    console.log(data);
-
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
     return res.status(200).json({
-      result: text || "No AI response"
+      result:
+        data?.choices?.[0]?.message?.content ||
+        "No AI response",
     });
 
   } catch (error) {
 
-    console.log("SERVER ERROR:", error);
+    console.log(error);
 
     return res.status(500).json({
-      error: "AI generation failed"
+      error: "AI generation failed",
     });
   }
 }
