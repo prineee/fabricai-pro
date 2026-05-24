@@ -4,42 +4,129 @@ import { generateAI } from "../../services/aiService";
 
 export default function EmailGenerator() {
 
-  const [subject, setSubject] = useState("");
-  const [tone, setTone] = useState("");
-  const [result, setResult] = useState("");
+  const [topic, setTopic] = useState("");
+  const [output, setOutput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleGenerate() {
+  const generateEmail = async () => {
 
-    const aiResult = await generateAI(
-      `Write professional email.
-       Subject: ${subject}
-       Tone: ${tone}`
+    if (!topic) {
+      alert("Please enter email topic");
+      return;
+    }
+
+    setLoading(true);
+
+    const result = await generateAI(
+      `Write a professional business email about ${topic}`
     );
 
-    setResult(aiResult);
-  }
+    setOutput(result);
+
+    setLoading(false);
+  };
 
   return (
     <DashboardLayout>
 
-      <h1>AI Email Generator</h1>
+      <div style={containerStyle}>
 
-      <input
-        value={subject}
-        onChange={(e) => setSubject(e.target.value)}
-      />
+        <h1 style={titleStyle}>
+          AI Email Generator
+        </h1>
 
-      <input
-        value={tone}
-        onChange={(e) => setTone(e.target.value)}
-      />
+        <div style={cardStyle}>
 
-      <button onClick={handleGenerate}>
-        Generate Email
-      </button>
+          <textarea
+            placeholder="Enter email topic..."
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            style={textareaStyle}
+          />
 
-      <pre>{result}</pre>
+          <button
+            onClick={generateEmail}
+            style={buttonStyle}
+          >
+            {loading ? "Generating..." : "Generate Email"}
+          </button>
+
+        </div>
+
+        <div style={outputCard}>
+
+          <h2 style={outputTitle}>
+            AI Response
+          </h2>
+
+          <p style={outputText}>
+            {output || "Generated email will appear here"}
+          </p>
+
+        </div>
+
+      </div>
 
     </DashboardLayout>
   );
 }
+
+const containerStyle = {
+  padding: "20px",
+};
+
+const titleStyle = {
+  fontSize: "42px",
+  color: "white",
+  marginBottom: "30px",
+};
+
+const cardStyle = {
+  background: "#0f172a",
+  padding: "25px",
+  borderRadius: "20px",
+  border: "1px solid #1e293b",
+  marginBottom: "25px",
+};
+
+const textareaStyle = {
+  width: "100%",
+  height: "220px",
+  padding: "18px",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+  background: "#ffffff",
+  color: "#000000",
+  fontSize: "16px",
+  marginBottom: "20px",
+  resize: "none" as const,
+  outline: "none",
+};
+
+const buttonStyle = {
+  padding: "14px 28px",
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  fontSize: "16px",
+  cursor: "pointer",
+};
+
+const outputCard = {
+  background: "#0f172a",
+  padding: "25px",
+  borderRadius: "20px",
+  border: "1px solid #1e293b",
+};
+
+const outputTitle = {
+  color: "white",
+  marginBottom: "20px",
+};
+
+const outputText = {
+  color: "#e2e8f0",
+  whiteSpace: "pre-wrap" as const,
+  lineHeight: "1.8",
+};

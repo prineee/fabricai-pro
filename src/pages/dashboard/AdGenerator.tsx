@@ -6,40 +6,135 @@ export default function AdGenerator() {
 
   const [product, setProduct] = useState("");
   const [audience, setAudience] = useState("");
-  const [result, setResult] = useState("");
+  const [output, setOutput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleGenerate() {
+  const generateAd = async () => {
 
-    const aiResult = await generateAI(
-      `Create ad copy.
-       Product: ${product}
-       Audience: ${audience}`
+    if (!product || !audience) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+
+    const result = await generateAI(
+      `Write high converting advertisement copy for ${product} targeting ${audience}`
     );
 
-    setResult(aiResult);
-  }
+    setOutput(result);
+
+    setLoading(false);
+  };
 
   return (
     <DashboardLayout>
 
-      <h1>AI Ad Generator</h1>
+      <div style={containerStyle}>
 
-      <input
-        value={product}
-        onChange={(e) => setProduct(e.target.value)}
-      />
+        <h1 style={titleStyle}>
+          AI Ad Generator
+        </h1>
 
-      <input
-        value={audience}
-        onChange={(e) => setAudience(e.target.value)}
-      />
+        <div style={cardStyle}>
 
-      <button onClick={handleGenerate}>
-        Generate Ad
-      </button>
+          <input
+            type="text"
+            placeholder="Enter product"
+            value={product}
+            onChange={(e) => setProduct(e.target.value)}
+            style={inputStyle}
+          />
 
-      <pre>{result}</pre>
+          <input
+            type="text"
+            placeholder="Target audience"
+            value={audience}
+            onChange={(e) => setAudience(e.target.value)}
+            style={inputStyle}
+          />
+
+          <button
+            onClick={generateAd}
+            style={buttonStyle}
+          >
+            {loading ? "Generating..." : "Generate Ad Copy"}
+          </button>
+
+        </div>
+
+        <div style={outputCard}>
+
+          <h2 style={outputTitle}>
+            AI Response
+          </h2>
+
+          <p style={outputText}>
+            {output || "Generated advertisement will appear here"}
+          </p>
+
+        </div>
+
+      </div>
 
     </DashboardLayout>
   );
 }
+
+const containerStyle = {
+  padding: "20px",
+};
+
+const titleStyle = {
+  fontSize: "42px",
+  color: "white",
+  marginBottom: "30px",
+};
+
+const cardStyle = {
+  background: "#0f172a",
+  padding: "25px",
+  borderRadius: "20px",
+  border: "1px solid #1e293b",
+  marginBottom: "25px",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "16px",
+  marginBottom: "18px",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+  background: "#ffffff",
+  color: "#000000",
+  fontSize: "16px",
+  outline: "none",
+};
+
+const buttonStyle = {
+  padding: "14px 28px",
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  fontSize: "16px",
+  cursor: "pointer",
+};
+
+const outputCard = {
+  background: "#0f172a",
+  padding: "25px",
+  borderRadius: "20px",
+  border: "1px solid #1e293b",
+};
+
+const outputTitle = {
+  color: "white",
+  marginBottom: "20px",
+};
+
+const outputText = {
+  color: "#e2e8f0",
+  whiteSpace: "pre-wrap" as const,
+  lineHeight: "1.8",
+};
