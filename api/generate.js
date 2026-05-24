@@ -1,4 +1,23 @@
-module.exports = async function (req, res) {
+module.exports = async (req, res) => {
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
 
   if (req.method !== "POST") {
 
@@ -25,10 +44,10 @@ module.exports = async function (req, res) {
         "Write a professional marketing email.";
     }
 
-    else if (type === "ad") {
+    else {
 
       systemPrompt =
-        "Write a high converting advertisement copy.";
+        "Write a high converting advertisement.";
     }
 
     const response = await fetch(
@@ -60,16 +79,12 @@ module.exports = async function (req, res) {
               content: prompt,
             },
           ],
-
-          temperature: 0.7,
         }),
       }
     );
 
     const data =
       await response.json();
-
-    console.log(data);
 
     return res.status(200).json({
 
@@ -85,8 +100,7 @@ module.exports = async function (req, res) {
 
     return res.status(500).json({
 
-      output:
-        "AI generation failed",
+      output: "AI generation failed",
     });
   }
 };
