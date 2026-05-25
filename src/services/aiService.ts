@@ -14,11 +14,13 @@ export async function generateAI(prompt: string) {
 
     const data = await response.json();
 
+    console.log(data);
+
     return data.result || "No AI response";
 
   } catch (error) {
 
-    console.log(error);
+    console.log("CLIENT ERROR:", error);
 
     return "AI generation failed";
   }

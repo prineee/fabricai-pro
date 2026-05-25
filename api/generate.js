@@ -16,6 +16,8 @@ export default async function handler(req, res) {
       });
     }
 
+    console.log("Prompt:", prompt);
+
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -38,6 +40,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    console.log("Groq Response:", data);
+
     return res.status(200).json({
       result:
         data?.choices?.[0]?.message?.content ||
@@ -46,7 +50,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.log(error);
+    console.log("SERVER ERROR:", error);
 
     return res.status(500).json({
       error: "AI generation failed",
