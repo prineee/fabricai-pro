@@ -24,4 +24,4 @@ export async function generateAI(prompt: string) {
 
     return "AI generation failed";
   }
-}
+}  
